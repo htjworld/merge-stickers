@@ -30,5 +30,6 @@ export async function runFetch(cfg: Config): Promise<string> {
   ];
   const privCount = raw.filter((i) => i.isPrivate).length;
   if (cfg.visibility === "public" && privCount) lines.push(`  private ${privCount}건은 visibility: public이라 빠짐`);
+  if (cfg.visibility === "private") lines.push(`  public ${raw.length - privCount}건은 visibility: private이라 빠짐`);
   return lines.join("\n");
 }

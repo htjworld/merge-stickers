@@ -32,6 +32,7 @@
       "type": "string",
       "enum": [
         "public",
+        "private",
         "all"
       ]
     },
@@ -249,6 +250,51 @@
             "owners"
           ]
         },
+        "colors": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "merged": {
+              "default": "auto",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "auto"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              ]
+            },
+            "repos": {
+              "default": "auto",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "auto"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              ]
+            },
+            "third": {
+              "default": "auto",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "const": "auto"
+                },
+                {
+                  "type": "string",
+                  "pattern": "^#[0-9a-fA-F]{6}$"
+                }
+              ]
+            }
+          }
+        },
         "buttons": {
           "default": true,
           "type": "boolean"
@@ -298,6 +344,19 @@
             "social",
             "avatar",
             "language"
+          ]
+        },
+        "color": {
+          "default": "unique",
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "unique"
+            },
+            {
+              "type": "string",
+              "pattern": "^#[0-9a-fA-F]{6}$"
+            }
           ]
         },
         "tier": {

@@ -6,8 +6,30 @@ branding:
   color: orange
 inputs:
   token:
-    description: GitHub 토큰. visibility가 all이면 repo 스코프 PAT가 필요합니다.
+    description: GitHub 토큰. private PR을 보려면 repo 스코프 PAT가 필요합니다.
     default: ${{ github.token }}
+  # 아래는 Run workflow 설정창에서 넘어오는 값. 비었거나 keep이면 config.yml을 그대로 둔다.
+  visibility:
+    description: public | private | all
+    default: ""
+  private_display:
+    description: mask | hide | show
+    default: ""
+  theme:
+    description: paper | holo | midnight | minimal
+    default: ""
+  sticker_color:
+    description: unique(스티커마다 다른 색) 또는 #RRGGBB
+    default: ""
+  merged_color:
+    description: auto 또는 #RRGGBB (헤더 MERGED PRs 숫자 색)
+    default: ""
+  repos_color:
+    description: auto 또는 #RRGGBB (헤더 REPOS 숫자 색)
+    default: ""
+  third_color:
+    description: auto 또는 #RRGGBB (헤더 세 번째 숫자 색)
+    default: ""
 runs:
   using: composite
   steps:
@@ -24,6 +46,20 @@ runs:
       shell: bash
       working-directory: ${{ github.action_path }}
       run: npm ci && npm run build
+    - name: apply settings
+      shell: bash
+      env:
+        V_VISIBILITY: ${{ inputs.visibility }}
+        V_PRIVATE: ${{ inputs.private_display }}
+        V_THEME: ${{ inputs.theme }}
+        V_STICKER: ${{ inputs.sticker_color }}
+        V_MERGED: ${{ inputs.merged_color }}
+        V_REPOS: ${{ inputs.repos_color }}
+        V_THIRD: ${{ inputs.third_color }}
+      run: |
+        node "${{ github.action_path }}/dist/cli.js" set \
+          "visibility=$V_VISIBILITY" "private.display=$V_PRIVATE" "theme=$V_THEME" "sticker.color=$V_STICKER" \
+          "header.colors.merged=$V_MERGED" "header.colors.repos=$V_REPOS" "header.colors.third=$V_THIRD"
     - name: fetch and render
       shell: bash
       env:
@@ -35,7 +71,8 @@ runs:
     - name: commit if changed
       shell: bash
       run: |
-        git add -A -- . ':!.merge-stickers/cache'
+        git add -A
+        git reset -q -- .merge-stickers/cache || true
         if git diff --cached --quiet; then echo "no changes"; exit 0; fi
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

@@ -3,10 +3,12 @@ import { loadConfig } from "./config/load.js";
 import { runFetch } from "./fetch.js";
 import { runCheck } from "./check.js";
 import { runInit } from "./init.js";
+import { runSet } from "./set.js";
 import { runRender } from "./render.js";
 
 const commands: Record<string, () => Promise<string>> = {
   init: () => runInit(process.argv.slice(3)),
+  set: async () => runSet(process.argv.slice(3)),
   fetch: () => runFetch(loadConfig()),
   render: () => runRender(loadConfig()),
   check: async () => runCheck(loadConfig()),

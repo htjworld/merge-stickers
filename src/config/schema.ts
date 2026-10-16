@@ -3,6 +3,7 @@ import { z } from "zod";
 const shape = z.enum(["circle", "squircle", "rounded-square", "hexagon", "star-badge", "shield", "cloud", "scallop"]);
 export const TIERS = ["white", "color", "bronze", "silver", "gold", "platinum", "diamond"] as const;
 const tier = z.enum(TIERS);
+const hexOrAuto = z.union([z.literal("auto"), z.string().regex(/^#[0-9a-fA-F]{6}$/)]).default("auto");
 const finish = z.enum(["glossy", "matte", "holo", "foil"]);
 
 export const configSchema = z.object({
@@ -13,7 +14,7 @@ export const configSchema = z.object({
     landed: z.boolean().default(false),
     coauthored: z.boolean().default(false),
   }).prefault({}),
-  visibility: z.enum(["public", "all"]).default("public"),
+  visibility: z.enum(["public", "private", "all"]).default("public"), // public만 | private만 | 전부
   private: z.object({ display: z.enum(["mask", "hide", "show"]).default("mask") }).prefault({}),
   include: z.object({
     own: z.boolean().default(false),
@@ -46,6 +47,12 @@ export const configSchema = z.object({
   }).prefault({}),
   header: z.object({
     stat: z.enum(["stars", "since", "latest", "owners"]).default("stars"),
+    // 숫자 색: auto(시드 랜덤, 서로 다른 색) 또는 #RRGGBB
+    colors: z.object({
+      merged: hexOrAuto,
+      repos: hexOrAuto,
+      third: hexOrAuto,
+    }).prefault({}),
     buttons: z.boolean().default(true), // 헤더 왼쪽 설정, 오른쪽 fetch 버튼 (주인만 동작)
     settingsUrl: z.string().optional(),
     fetchUrl: z.string().optional(),
@@ -56,6 +63,8 @@ export const configSchema = z.object({
     variation: z.number().min(0).max(1).default(0.6),
     seed: z.string().optional(),
     image: z.enum(["auto", "readme", "social", "avatar", "language"]).default("auto"),
+    // 컬러 단계 테두리색: unique(스티커마다 다른 색) 또는 #RRGGBB 하나로 통일
+    color: z.union([z.literal("unique"), z.string().regex(/^#[0-9a-fA-F]{6}$/)]).default("unique"),
     tier: z.union([z.literal("auto"), tier]).default("auto"),
     thresholds: z.object({
       bronze: z.number().int().positive().default(10),

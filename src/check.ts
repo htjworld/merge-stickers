@@ -28,6 +28,8 @@ export function runCheck(cfg: Config): string {
     if (leaked.length) errors.push(`private 항목 ${leaked.length}건에 이름/제목/링크가 남아 있음 (merges.json). fetch를 다시 실행하세요.`);
     const loose = merges.items.filter((i) => i.isPrivate && cfg.visibility === "public");
     if (loose.length) errors.push(`visibility: public인데 private 항목 ${loose.length}건이 merges.json에 있음`);
+    const pub = merges.items.filter((i) => !i.isPrivate && cfg.visibility === "private");
+    if (pub.length) errors.push(`visibility: private인데 public 항목 ${pub.length}건이 merges.json에 있음 (fetch를 다시 실행하세요)`);
   }
 
   // 2. config 키가 아무것에도 안 맞는 경우 (레포 이름 변경 등) (plan 4.8)

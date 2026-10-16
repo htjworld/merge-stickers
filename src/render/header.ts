@@ -33,8 +33,10 @@ export function renderHeader(items: Item[], cfg: Config, dark: boolean, seed: st
   const t = THEMES[cfg.theme], k = dark ? 1 : 0;
   const s = stats(items, cfg.timezone, merged);
   const r = rng(`${seed}:header`);
-  const pool = [...INK];
-  const colors = [0, 1, 2].map(() => pool.splice(Math.floor(r() * pool.length), 1)[0]!); // 서로 다른 3색
+  // 지정한 색(#RRGGBB)은 그대로, auto는 시드로 뽑되 지정한 색과도 서로 겹치지 않게
+  const want = [cfg.header.colors.merged, cfg.header.colors.repos, cfg.header.colors.third];
+  const pool = INK.filter((c) => !want.some((w) => w.toLowerCase() === c.toLowerCase()));
+  const colors = want.map((w) => (w !== "auto" ? w : pool.splice(Math.floor(r() * pool.length), 1)[0]!));
   const cols = [[s.merged, "MERGED PRs"], [s.repos, "REPOS"], [s[cfg.header.stat], THIRD[cfg.header.stat]]] as const;
   const cells = cols.map(([n, label], i) => {
     const x = 80 + i * 160;

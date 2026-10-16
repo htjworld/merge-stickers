@@ -1,11 +1,13 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/htjworld/merge-stickers/main/schema/merge-stickers.schema.json
+# ⚠ 이 파일을 저장한 뒤에는 README의 fetch 버튼(Actions > Run workflow)을 눌러야 적용됩니다!
+#    (Run workflow 창의 입력으로도 같은 설정을 바꿀 수 있습니다)
 # merge-stickers 설정. 사람(또는 Claude Code)이 고치는 파일은 이것 하나뿐입니다.
 # 고친 뒤: npx merge-stickers render  (네트워크 없이 다시 그림)
 # user를 생략하면 자동 감지합니다 (Actions: 레포 오너, 로컬: 토큰 소유자).
 # user: your-login
 timezone: Asia/Seoul
 
-visibility: __VISIBILITY__   # public | all (all은 repo 스코프 PAT 필요)
+visibility: __VISIBILITY__   # public(공개만) | private(비공개만) | all(전부). private/all은 repo 스코프 PAT 필요
 private:
   display: mask              # mask(자물쇠, 이름 제거) | hide | show
 
@@ -27,6 +29,10 @@ layout:
 
 header:
   stat: stars                # 세 번째 통계: stars(기여한 레포 스타 합) | since | latest | owners
+  colors:                    # 헤더 숫자 색: auto(랜덤, 서로 다른 색) 또는 "#RRGGBB"
+    merged: auto
+    repos: auto
+    third: auto
   buttons: true              # 헤더 왼쪽 설정, 오른쪽 fetch 버튼 (README는 보는 사람을 못 가려서 모두에게 보이지만 주인만 동작)
   # settingsUrl: https://...   # 버튼 링크를 직접 지정 (기본: config.yml 편집 페이지, 워크플로우 실행 페이지)
   # fetchUrl: https://...
@@ -37,6 +43,7 @@ sticker:
   variation: 0.6             # 0(정렬) ~ 1(자유분방)
   image: auto                # auto(README 첫 이미지 > 소셜 프리뷰 > 아바타) | readme | social | avatar | language
   animate: true              # 동 이상 단계의 반짝임 (끄면 정지 이미지)
+  color: unique              # 컬러 단계 테두리색: unique(스티커마다 다른 색) | "#RRGGBB" 하나로 통일
   tier: auto                 # auto | white color bronze silver gold platinum diamond (전부 한 단계로 고정)
   thresholds:                # 레포의 PR이 몇 개일 때 해당 단계가 되는지
     bronze: 10
