@@ -54,3 +54,19 @@ export function renderSlot(n: number, cfg: Config, dark: boolean): string {
     `<circle cx="48" cy="48" r="30" fill="none" stroke="${c}" stroke-width="2.5" stroke-dasharray="5 4"/>` +
     `<text x="48" y="54" text-anchor="middle" font-size="17" font-weight="600" fill="${c}" font-family="${FONT}">${n}</text></svg>`;
 }
+
+/**
+ * 헤더 양옆의 둥근 아이콘 버튼 (44x84, 헤더와 같은 높이). 라이트/다크 두 벌.
+ * README는 보는 사람을 구분할 수 없어서 모두에게 보이지만, 링크 대상은 레포 주인만 편집/실행할 수 있다.
+ */
+export function renderButton(kind: "settings" | "fetch", cfg: Config, dark: boolean): string {
+  const t = THEMES[cfg.theme], k = dark ? 1 : 0, ink = t.ink[k];
+  const icon = kind === "settings"
+    // 톱니바퀴: 점선 링(톱니) + 몸통 링 + 가운데 구멍
+    ? `<g fill="none" stroke="${ink}" stroke-linecap="butt"><circle cx="22" cy="42" r="8.4" stroke-width="3.4" stroke-dasharray="3.3 3.3"/><circle cx="22" cy="42" r="6" stroke-width="2.4"/><circle cx="22" cy="42" r="2.4" stroke-width="1.8"/></g>`
+    // 새로고침: 300도 호 + 화살촉
+    : `<g fill="none" stroke="${ink}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M28.5 36.5A8 8 0 1 0 30 42"/><path d="M29 31v6h-6"/></g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 84" width="44" height="84">` +
+    `<circle cx="22" cy="42" r="17" fill="${t.paper[k]}" stroke="${ink}" stroke-opacity=".25" stroke-width="1.5"/>` +
+    `<g opacity=".75">${icon}</g></svg>`;
+}

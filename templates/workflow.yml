@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: htjworld/merge-stickers@v1
+      - uses: htjworld/merge-stickers@main
         with:
           token: ${{ secrets.GH_PAT || github.token }}

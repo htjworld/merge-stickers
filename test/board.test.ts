@@ -57,3 +57,20 @@ test("README는 마커 사이만 바뀌고, 같은 내용이면 변경 없음", 
   writeFileSync(p, "no markers");
   expect(() => injectReadme(p, "x")).toThrow(/마커/);
 });
+
+test("헤더 양옆 버튼: 왼쪽 설정, 오른쪽 fetch, 끄거나 레포를 모르면 없음", () => {
+  const links = { settings: "https://github.com/o/o/edit/main/.merge-stickers/config.yml", fetch: "https://github.com/o/o/actions/workflows/merge-stickers.yml" };
+  const mk = (c: object, b: typeof links | null) => {
+    const cfg = configSchema.parse(c);
+    return buildBoard(toTiles([item(1)], cfg, "me", () => null), cfg, "me", b);
+  };
+  const on = mk({}, links);
+  expect(on.snippet).toContain(`<a href="${links.settings}" title="settings (owner only)">`);
+  expect(on.snippet).toMatch(/align="left"[^>]*alt="settings"/);
+  expect(on.snippet).toMatch(/align="right"[^>]*alt="fetch"/);
+  expect(on.snippet.indexOf("alt=\"settings\"")).toBeLessThan(on.snippet.indexOf("alt=\"fetch\""));
+  expect(on.snippet.indexOf("alt=\"fetch\"")).toBeLessThan(on.snippet.indexOf("merged PRs across")); // 같은 <p> 안, 헤더 앞
+  expect([...on.files.keys()]).toEqual(expect.arrayContaining(["button-settings-light.svg", "button-settings-dark.svg", "button-fetch-light.svg", "button-fetch-dark.svg"]));
+  expect(mk({}, null).snippet).not.toContain('alt="settings"');
+  expect(mk({ header: { buttons: false } }, links).snippet).not.toContain('alt="fetch"');
+});

@@ -44,7 +44,12 @@ export const configSchema = z.object({
     tape: z.boolean().default(true),
     texture: z.boolean().default(true),
   }).prefault({}),
-  header: z.object({ stat: z.enum(["stars", "since", "latest", "owners"]).default("stars") }).prefault({}),
+  header: z.object({
+    stat: z.enum(["stars", "since", "latest", "owners"]).default("stars"),
+    buttons: z.boolean().default(true), // 헤더 왼쪽 설정, 오른쪽 fetch 버튼 (주인만 동작)
+    settingsUrl: z.string().optional(),
+    fetchUrl: z.string().optional(),
+  }).prefault({}),
   theme: z.enum(["paper", "holo", "midnight", "minimal"]).default("paper"),
   sticker: z.object({
     size: z.number().positive().default(72),

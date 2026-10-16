@@ -8,9 +8,6 @@ inputs:
   token:
     description: GitHub 토큰. visibility가 all이면 repo 스코프 PAT가 필요합니다.
     default: ${{ github.token }}
-  version:
-    description: 실행할 merge-stickers npm 버전
-    default: latest
 runs:
   using: composite
   steps:
@@ -22,14 +19,19 @@ runs:
         path: .merge-stickers/cache
         key: merge-stickers-cache-${{ github.run_id }}
         restore-keys: merge-stickers-cache-
+    # npm 배포 없이 액션 저장소 코드를 그대로 빌드해서 쓴다
+    - name: build merge-stickers
+      shell: bash
+      working-directory: ${{ github.action_path }}
+      run: npm ci && npm run build
     - name: fetch and render
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.token }}
       run: |
-        npx --yes merge-stickers@${{ inputs.version }} fetch
-        npx --yes merge-stickers@${{ inputs.version }} render
-        npx --yes merge-stickers@${{ inputs.version }} check
+        node "${{ github.action_path }}/dist/cli.js" fetch
+        node "${{ github.action_path }}/dist/cli.js" render
+        node "${{ github.action_path }}/dist/cli.js" check
     - name: commit if changed
       shell: bash
       run: |

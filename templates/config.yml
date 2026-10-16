@@ -27,6 +27,9 @@ layout:
 
 header:
   stat: stars                # 세 번째 통계: stars(기여한 레포 스타 합) | since | latest | owners
+  buttons: true              # 헤더 왼쪽 설정, 오른쪽 fetch 버튼 (README는 보는 사람을 못 가려서 모두에게 보이지만 주인만 동작)
+  # settingsUrl: https://...   # 버튼 링크를 직접 지정 (기본: config.yml 편집 페이지, 워크플로우 실행 페이지)
+  # fetchUrl: https://...
 
 theme: paper                 # paper | holo | midnight | minimal
 sticker:

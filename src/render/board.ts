@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { Config } from "../config/schema.js";
 import type { Item } from "../types.js";
-import { renderHeader, renderSlot, stats } from "./header.js";
+import { renderButton, renderHeader, renderSlot, stats } from "./header.js";
 import { renderSticker, prefixIds, CANVAS } from "./sticker.js";
 import { THEMES } from "./themes.js";
 
@@ -42,7 +42,7 @@ const slotCount = (n: number, cfg: Config) => {
 };
 
 /** 산출물 전부와 README 스니펫을 만든다. 같은 입력이면 같은 출력 (plan 13-5). */
-export function buildBoard(tiles: Tile[], cfg: Config, seed: string): { files: Files; snippet: string } {
+export function buildBoard(tiles: Tile[], cfg: Config, seed: string, buttons: { settings: string; fetch: string } | null = null): { files: Files; snippet: string } {
   const dir = cfg.output.dir;
   const files: Files = new Map();
   const items = tiles.map((t) => t.item);
@@ -53,7 +53,13 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string): { files: F
   const hl = v("header-light.svg", renderHeader(items, cfg, false, seed, prs));
   const hd = v("header-dark.svg", renderHeader(items, cfg, true, seed, prs));
   const w = cfg.sticker.size;
-  const header = `<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
+  // 설정(왼쪽)과 fetch(오른쪽)는 float 이미지라 헤더와 같은 줄에 놓인다. 주인이 아니면 편집/실행 권한이 없다.
+  const btn = (kind: "settings" | "fetch", href: string, side: "left" | "right") => {
+    const l = v(`button-${kind}-light.svg`, renderButton(kind, cfg, false)), d = v(`button-${kind}-dark.svg`, renderButton(kind, cfg, true));
+    return `<a href="${attr(href)}" title="${kind === "settings" ? "settings (owner only)" : "fetch now (owner only)"}"><picture><source media="(prefers-color-scheme: dark)" srcset="${d}"><img src="${l}" align="${side}" width="44" height="84" alt="${kind}"></picture></a>`;
+  };
+  const side = cfg.header.buttons && buttons ? btn("settings", buttons.settings, "left") + btn("fetch", buttons.fetch, "right") : "";
+  const header = `<p align="center">${side}<picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
 
   if (cfg.output.mode === "sheet") return { files, snippet: sheet(tiles, cfg, seed, files, dir) };
 

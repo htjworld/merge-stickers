@@ -248,6 +248,16 @@
             "latest",
             "owners"
           ]
+        },
+        "buttons": {
+          "default": true,
+          "type": "boolean"
+        },
+        "settingsUrl": {
+          "type": "string"
+        },
+        "fetchUrl": {
+          "type": "string"
         }
       }
     },
