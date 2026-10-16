@@ -53,6 +53,7 @@ export const configSchema = z.object({
       repos: hexOrAuto,
       third: hexOrAuto,
     }).prefault({}),
+    logo: z.boolean().default(true), // 위쪽 MERGE STICKERS 로고 (누르면 merge-stickers 저장소로 이동)
     buttons: z.boolean().default(true), // 헤더 왼쪽 설정, 오른쪽 fetch 버튼 (주인만 동작)
     settingsUrl: z.string().optional(),
     fetchUrl: z.string().optional(),

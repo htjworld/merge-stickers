@@ -295,6 +295,10 @@
             }
           }
         },
+        "logo": {
+          "default": true,
+          "type": "boolean"
+        },
         "buttons": {
           "default": true,
           "type": "boolean"

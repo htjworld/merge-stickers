@@ -7,7 +7,7 @@ import { THEMES } from "./themes.js";
 const FONT = "-apple-system,'Segoe UI',Helvetica,Arial,sans-serif";
 
 /** 숫자 색은 시드로 고른다 (같은 사용자면 항상 같은 색, 라이트/다크 동일). 흰 배경에서도 읽히는 진한 톤. */
-const INK = ["#FF5C5C", "#FF8A1F", "#E6A700", "#14B87A", "#12A8C9", "#3D8BFF", "#9B5CF6", "#F25CA8"];
+export const INK = ["#FF5C5C", "#FF8A1F", "#E6A700", "#14B87A", "#12A8C9", "#3D8BFF", "#9B5CF6", "#F25CA8"];
 
 const compact = (n: number) =>
   n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${+(n / 1e3).toFixed(n < 1e4 ? 1 : 0)}K` : String(n);

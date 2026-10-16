@@ -74,3 +74,13 @@ test("헤더 양옆 버튼: 왼쪽 설정, 오른쪽 fetch, 끄거나 레포를 
   expect(mk({}, null).snippet).not.toContain('alt="settings"');
   expect(mk({ header: { buttons: false } }, links).snippet).not.toContain('alt="fetch"');
 });
+
+test("로고는 글자 path로 그려지고 merge-stickers 저장소로 링크되며 header.logo=false면 빠진다", () => {
+  const on = build([item(1)]);
+  expect(on.snippet).toContain('<a href="https://github.com/htjworld/merge-stickers"');
+  expect(on.files.get("logo-light.svg")).toContain('<path id="l0"');
+  expect(on.files.get("logo-light.svg")).not.toContain("<text");
+  const off = build([item(1)], { header: { logo: false } });
+  expect(off.files.has("logo-light.svg")).toBe(false);
+  expect(off.snippet).not.toContain("merge-stickers\"");
+});

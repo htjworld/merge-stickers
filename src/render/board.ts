@@ -4,6 +4,9 @@ import type { Item } from "../types.js";
 import { renderButton, renderHeader, renderSlot, stats } from "./header.js";
 import { renderSticker, prefixIds, CANVAS } from "./sticker.js";
 import { THEMES } from "./themes.js";
+import { renderWordmark } from "./wordmark.js";
+
+export const HOME = "https://github.com/htjworld/merge-stickers";
 
 export interface Tile { id: string; item: Item; image: string | null; count: number; nth: number; href: string; alt: string }
 export type Files = Map<string, string>; // 출력 폴더 기준 상대경로 → 내용
@@ -59,7 +62,11 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string, buttons: { 
     return `<a href="${attr(href)}" title="${kind === "settings" ? "settings (owner only)" : "fetch now (owner only)"}"><picture><source media="(prefers-color-scheme: dark)" srcset="${d}"><img src="${l}" align="${side}" width="44" height="84" alt="${kind}"></picture></a>`;
   };
   const side = cfg.header.buttons && buttons ? btn("settings", buttons.settings, "left") + btn("fetch", buttons.fetch, "right") : "";
-  const header = `<p align="center">${side}<picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
+  const logo = cfg.header.logo
+    ? `<p align="center"><a href="${HOME}" title="merge-stickers"><picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(cfg, true))}"><img src="${v("logo-light.svg", renderWordmark(cfg, false))}" width="300" alt="MERGE STICKERS"></picture></a></p>
+`
+    : "";
+  const header = `${logo}<p align="center">${side}<picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
 
   if (cfg.output.mode === "sheet") return { files, snippet: sheet(tiles, cfg, seed, files, dir) };
 
