@@ -74,6 +74,7 @@ export const configSchema = z.object({
     rotate: z.number().optional(),
     finish: finish.optional(),
     tier: tier.optional(),
+    color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
     image: z.string().optional(),
     hidden: z.boolean().optional(),
   })).default({}),

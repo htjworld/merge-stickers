@@ -4,7 +4,7 @@ import type { Item } from "../types.js";
 import { pick, range, rng, weighted } from "./seed.js";
 import { PATHS, SHAPES, type Shape } from "./shapes.js";
 import { THEMES, type Finish, type Theme } from "./themes.js";
-import { CSS, isMetal, ringFor, tierFor, type Tier } from "./tiers.js";
+import { CSS, isMetal, repoColor, ringFor, tierFor, type Tier } from "./tiers.js";
 
 export const CANVAS = 96;
 
@@ -26,15 +26,15 @@ export function look(item: Item, cfg: Config, seed: string, nth = 1) {
   const scale = 1 + range(r, -0.06, 0.06) * v;
   const dx = range(r, -6, 6) * v; // 흔들림 한도 = 캔버스 여백 (글로우가 안 잘리게)
   const dy = range(r, -6, 6) * v;
-  const colorIdx = Math.floor(r() * 8);
   const tape = r() < 0.1 * Math.min(1, v * 2);
   const peel = r() < 0.15 * Math.min(1, v * 2);
   const tapeRot = range(r, -10, 10);
   const delay = r() * 3;
+  const color = o.color ?? repoColor(item.repo || item.id);
   const tier: Tier = o.tier ?? (cfg.sticker.tier !== "auto" ? cfg.sticker.tier : tierFor(nth, cfg.sticker.thresholds));
   // 메탈 단계의 면 마감은 단계가 정한다 (플래티넘=홀로, 나머지=광택)
   const finish: Finish = o.finish ?? (tier === "platinum" ? "holo" : isMetal(tier) ? "glossy" : rolled);
-  return { shape, finish, rotate, scale, dx, dy, colorIdx, tape, peel, tapeRot, delay, tier, theme };
+  return { shape, finish, rotate, scale, dx, dy, color, tape, peel, tapeRot, delay, tier, theme };
 }
 
 function fallback(item: Item, theme: Theme): string {
@@ -53,7 +53,7 @@ function fallback(item: Item, theme: Theme): string {
 export function renderSticker(item: Item, cfg: Config, seed: string, image: string | null, count = 1, nth = count): string {
   const L = look(item, cfg, seed, nth);
   const d = PATHS[L.shape];
-  const R = ringFor(L.tier, d, { n: nth, colorIdx: L.colorIdx, white: L.theme.borders[0]!, foil: L.finish === "foil", animate: cfg.sticker.animate, delay: L.delay });
+  const R = ringFor(L.tier, d, { color: L.color, white: L.theme.borders[0]!, foil: L.finish === "foil", animate: cfg.sticker.animate, delay: L.delay });
   const content = image
     ? `<image href="${image}" x="12" y="12" width="72" height="72" preserveAspectRatio="xMidYMid slice"/>`
     : fallback(item, L.theme);

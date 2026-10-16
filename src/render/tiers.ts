@@ -1,4 +1,5 @@
 import type { Config } from "../config/schema.js";
+import { rng } from "./seed.js";
 
 export type Tier = (typeof import("../config/schema.js").TIERS)[number];
 export type Thresholds = Config["sticker"]["thresholds"];
@@ -7,8 +8,18 @@ export type Thresholds = Config["sticker"]["thresholds"];
 export const BORDER_EM = 0.045;
 export const BORDER = 60 * BORDER_EM;
 
-/** 2~9번째 머지에 쓰는 컬러 8종 */
-export const COLORS = ["#FF6B6B", "#FF9F43", "#FECA57", "#1DD1A1", "#48DBFB", "#54A0FF", "#A66CFF", "#FF78C4"] as const;
+/**
+ * 레포마다 고유한 색. 레포 이름만으로 정해져서 누가 만들어도 같은 레포는 항상 같은 색이다.
+ * 색상(0.01° 단위) x 채도 x 명도라 사실상 겹치지 않고, 채도와 명도는 범위를 둬서 탁하거나 흐린 색은 피한다.
+ */
+export function repoColor(repo: string): string {
+  const r = rng(`color:${repo}`);
+  const h = r() * 360, s = 0.65 + r() * 0.25, l = 0.5 + r() * 0.12;
+  const k = (n: number) => (n + h / 30) % 12;
+  const a = s * Math.min(l, 1 - l);
+  const ch = (n: number) => Math.round(255 * (l - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))));
+  return "#" + [0, 8, 4].map((n) => ch(n).toString(16).padStart(2, "0")).join("").toUpperCase();
+}
 
 /** 레포의 n번째 머지가 어떤 단계인지. 1=흰색, 2~9=컬러, 이후 기준 개수마다 동/은/금/플래티넘/다이아 */
 export function tierFor(n: number, th: Thresholds): Tier {
@@ -57,14 +68,14 @@ export interface Ring {
 }
 
 /**
- * 단계별 테두리. d는 도형 path. colorIdx는 color 단계에서 쓸 색 번호.
+ * 단계별 테두리. d는 도형 path. color는 color 단계의 테두리색(레포 고유색).
  * 흰색/컬러는 단색, 동 이상은 메탈 이중 스트로크 + 글로우 + 반짝임 + 빛 스침.
  */
-export function ringFor(tier: Tier, d: string, o: { n: number; colorIdx: number; white: string; foil: boolean; animate: boolean; delay: number }): Ring {
+export function ringFor(tier: Tier, d: string, o: { color: string; white: string; foil: boolean; animate: boolean; delay: number }): Ring {
   const w = BORDER * 2;
   const stroke = (paint: string, width: number) => `<path d="${d}" fill="${paint}" stroke="${paint}" stroke-width="${f(width)}" stroke-linejoin="round"/>`;
   if (!isMetal(tier)) {
-    const c = tier === "white" ? o.white : COLORS[(tier === "color" && o.n >= 2 ? o.n - 2 : o.colorIdx) % COLORS.length]!;
+    const c = tier === "white" ? o.white : o.color;
     const foil = o.foil;
     return {
       defs: foil ? grad("foil", ["#FCEFB4", "#D4A72C", "#F7E08A"]) : "",

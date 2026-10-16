@@ -38,3 +38,20 @@ test("설정으로 전체/레포별/PR별 단계를 강제하고, 기준 개수�
   expect(renderSticker(item("1", "o/x"), repo, "s", null, 1, 1)).not.toContain("#FFD54A");
   expect(tierFor(3, configSchema.parse({ sticker: { thresholds: { bronze: 3 } } }).sticker.thresholds)).toBe("bronze");
 });
+
+test("레포마다 고유한 고정 색: 사용자/시드와 무관, 레포가 다르면 다른 색, 설정으로 덮어쓰기", async () => {
+  const { repoColor } = await import("../src/render/tiers.js");
+  expect(repoColor("python/cpython")).toBe(repoColor("python/cpython"));
+  expect(repoColor("python/cpython")).toMatch(/^#[0-9A-F]{6}$/);
+  const colors = new Set(Array.from({ length: 1000 }, (_, i) => repoColor(`owner${i}/repo${i}`)));
+  expect(colors.size).toBe(1000);
+
+  const c = configSchema.parse({});
+  const border = (repo: string, seed: string, o = c) => renderSticker(item("1", repo), o, seed, null, 2, 2);
+  expect(border("a/x", "alice")).toContain(repoColor("a/x")); // 컬러 단계 테두리 = 레포 고유색
+  expect(border("a/x", "alice")).toBe(border("a/x", "alice"));
+  expect(border("a/x", "alice")).toContain(repoColor("a/x") + '" stroke="' + repoColor("a/x"));
+  expect(border("a/y", "alice")).not.toContain(repoColor("a/x"));
+  expect(border("a/x", "bob")).toContain(repoColor("a/x")); // 시드가 달라도 같은 색
+  expect(border("a/x", "alice", configSchema.parse({ stickers: { "a/x": { color: "#123456" } } }))).toContain("#123456");
+});
