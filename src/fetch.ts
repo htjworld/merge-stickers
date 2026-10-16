@@ -19,7 +19,7 @@ export async function runFetch(cfg: Config): Promise<string> {
   const imgs = await downloadAll(shown.flatMap((i) => imageSource(i, cfg).url ?? []));
   const lines = [
     `${user}: 머지 ${raw.length}건 수집, 보관 ${items.length}건 (사라진 항목 ${items.filter((i) => i.gone).length}건 보존)`,
-    `표시 ${shown.length}건, 레포 ${new Set(shown.map((i) => i.repo)).size}개`,
+    `표시 ${shown.length}건, 레포 ${new Set(shown.map((i) => i.repo).filter(Boolean)).size}개`,
     ...Object.entries(excluded).map(([k, n]) => `  제외 ${k}: ${n}건`),
     `이미지: 새로 ${imgs.new}, 캐시 ${imgs.hit}, 실패 ${imgs.fail}`,
     changed ? "merges.json 갱신됨" : "변경 없음",

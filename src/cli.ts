@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 import { loadConfig } from "./config/load.js";
 import { runFetch } from "./fetch.js";
+import { runRender } from "./render.js";
 
 const commands: Record<string, () => Promise<string>> = {
   fetch: () => runFetch(loadConfig()),
+  render: () => runRender(loadConfig()),
 };
 
 const cmd = process.argv[2] ?? "";

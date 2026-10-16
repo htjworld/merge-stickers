@@ -43,7 +43,7 @@ function fallback(item: Item, theme: Theme): string {
 }
 
 /** image는 이미 리사이즈된 data URI. 없으면 언어색 이니셜 폴백. */
-export function renderSticker(item: Item, cfg: Config, seed: string, image: string | null): string {
+export function renderSticker(item: Item, cfg: Config, seed: string, image: string | null, count = 1): string {
   const L = look(item, cfg, seed);
   const d = PATHS[L.shape];
   const foil = L.finish === "foil";
@@ -61,6 +61,11 @@ export function renderSticker(item: Item, cfg: Config, seed: string, image: stri
   const peel = L.peel
     ? `<path d="M64,80L80,64Q81,80 64,80Z" fill="#fff" stroke="#00000022" stroke-width=".6"/>` : "";
 
+  const badge = count > 1 && cfg.sticker.showCount
+    ? `<circle cx="76" cy="76" r="11" fill="${L.theme.accent[0]}" stroke="#fff" stroke-width="2"/>` +
+      `<text x="76" y="80" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif">x${count}</text>`
+    : "";
+
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${CANVAS} ${CANVAS}" width="${CANVAS}" height="${CANVAS}">` +
     `<defs>` +
     `<clipPath id="c"><path d="${d}"/></clipPath>` +
@@ -72,7 +77,7 @@ export function renderSticker(item: Item, cfg: Config, seed: string, image: stri
     `</defs>` +
     `<g transform="translate(${f(L.dx)} ${f(L.dy)}) translate(48 48) rotate(${f(L.rotate)}) scale(${f(L.scale)}) translate(-48 -48)" filter="url(#s)">` +
     `<path d="${d}" fill="${stroke}" stroke="${stroke}" stroke-width="${f(L.borderW * 2)}" stroke-linejoin="round"/>` +
-    `<g clip-path="url(#c)">${content}</g>${shine}${peel}${tape}</g></svg>`;
+    `<g clip-path="url(#c)">${content}</g>${shine}${peel}${tape}</g>${badge}</svg>`;
 }
 
 /** 한 문서에 여러 스티커를 넣을 때(board.svg 시트) id 충돌을 막는다. */
