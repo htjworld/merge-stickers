@@ -3,6 +3,7 @@ import { applyPrivate } from "./curate/private.js";
 import { filterItems } from "./curate/filter.js";
 import { detectUser, findToken } from "./auth.js";
 import { fetchMerged, viewerLogin } from "./github/client.js";
+import { fetchReadmeImages } from "./github/readme.js";
 import { downloadAll, imageSource } from "./assets/image.js";
 import { mergeItems, readMerges, writeMerges } from "./store.js";
 
@@ -11,12 +12,15 @@ export async function runFetch(cfg: Config): Promise<string> {
   const token = findToken();
   const user = await detectUser(cfg.user, () => viewerLogin(token));
   const raw = await fetchMerged(token, user);
+  // README 첫 이미지: 공개 레포만 (private은 마스킹되므로 조회하지 않는다)
+  const readmes = await fetchReadmeImages(token, [...new Set(raw.filter((i) => !i.isPrivate).map((i) => i.repo))]);
+  for (const i of raw) i.readmeImage = readmes.get(i.repo) ?? null;
   const prev = applyPrivate(readMerges()?.items ?? [], cfg);
   const items = mergeItems(prev, applyPrivate(raw, cfg));
   const changed = writeMerges({ generatedAt: new Date().toISOString(), user, items });
 
   const { items: shown, excluded } = filterItems(items, cfg, user);
-  const imgs = await downloadAll(shown.flatMap((i) => imageSource(i, cfg).url ?? []));
+  const imgs = await downloadAll(shown.map((i) => imageSource(i, cfg).urls));
   const lines = [
     `${user}: 머지 ${raw.length}건 수집, 보관 ${items.length}건 (사라진 항목 ${items.filter((i) => i.gone).length}건 보존)`,
     `표시 ${shown.length}건, 레포 ${new Set(shown.map((i) => i.repo).filter(Boolean)).size}개`,

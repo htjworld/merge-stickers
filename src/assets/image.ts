@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import type { Config } from "../config/schema.js";
-import { idsOf } from "../curate/filter.js";
+import { styleKeys } from "../curate/filter.js";
 import type { Item } from "../types.js";
 
 export const CACHE_DIR = ".merge-stickers/cache";
@@ -51,14 +51,16 @@ export async function download(url: string): Promise<"hit" | "new" | "fail"> {
   }
 }
 
-/** 어떤 이미지를 쓸지: stickers 지정 → social → avatar → (없으면 폴백) (plan 3.4) */
-export function imageSource(item: Item, cfg: Config): { url: string | null; local: string | null } {
-  const local = cfg.stickers[idsOf(item).find((k) => cfg.stickers[k]?.image) ?? ""]?.image ?? null;
-  if (local) return { url: null, local };
-  const mode = cfg.sticker.image;
-  if (mode === "language") return { url: null, local: null };
-  const url = mode === "avatar" ? item.avatarUrl : item.imageUrl ?? item.avatarUrl;
-  return { url: url || null, local: null };
+/**
+ * 어떤 이미지를 쓸지, 우선순위 순 후보 (plan 3.4).
+ * auto: stickers 지정 > README 첫 이미지 > 커스텀 소셜 프리뷰 > 오너 아바타 > (없으면 폴백 스티커)
+ */
+export function imageSource(item: Item, cfg: Config): { urls: string[]; local: string | null } {
+  const local = cfg.stickers[styleKeys(item).find((k) => cfg.stickers[k]?.image) ?? ""]?.image ?? null;
+  if (local) return { urls: [], local };
+  const by = { readme: item.readmeImage, social: item.imageUrl, avatar: item.avatarUrl };
+  const order = { auto: ["readme", "social", "avatar"], readme: ["readme", "avatar"], social: ["social", "avatar"], avatar: ["avatar"], language: [] } as const;
+  return { urls: order[cfg.sticker.image].flatMap((k) => by[k] || []), local: null };
 }
 
 /** 로컬 이미지는 캐시 없이 그때그때 가공한다 (render는 네트워크 없이 동작). */
@@ -73,15 +75,27 @@ export async function loadLocal(path: string): Promise<string | null> {
 
 export async function imageFor(item: Item, cfg: Config): Promise<string | null> {
   const s = imageSource(item, cfg);
-  return s.local ? loadLocal(s.local) : cached(s.url);
+  if (s.local) return loadLocal(s.local);
+  for (const u of s.urls) {
+    const c = cached(u);
+    if (c) return c;
+  }
+  return null;
 }
 
-/** 병렬 6개씩 받는다. 반환: 새로 받은 수, 실패한 수 */
-export async function downloadAll(urls: string[]) {
-  const todo = [...new Set(urls)];
+/** 후보 목록마다 앞에서부터 하나 받아질 때까지 시도. 병렬 6개씩. 반환: 새로 받은 수, 캐시 적중, 전부 실패한 수 */
+export async function downloadAll(lists: string[][]) {
   const stat = { new: 0, fail: 0, hit: 0 };
-  for (let i = 0; i < todo.length; i += 6) {
-    for (const r of await Promise.all(todo.slice(i, i + 6).map(download))) stat[r]++;
+  const one = async (urls: string[]) => {
+    for (const u of urls) {
+      const r = await download(u);
+      if (r !== "fail") return r;
+    }
+    return urls.length ? "fail" : null;
+  };
+  const uniq = [...new Map(lists.map((l) => [l.join("|"), l])).values()];
+  for (let i = 0; i < uniq.length; i += 6) {
+    for (const r of await Promise.all(uniq.slice(i, i + 6).map(one))) if (r) stat[r]++;
   }
   return stat;
 }

@@ -7,6 +7,9 @@ const globRe = (g: string) =>
 /** config 키는 현재 key, 예전 key(alias), PR id 중 무엇이든 매칭 (plan 4.8) */
 export const idsOf = (i: Item) => [i.key, ...i.aliases, i.id];
 
+/** stickers 설정 키: PR 키 외에 레포 이름("owner/repo")으로도 레포 전체를 지정할 수 있다 */
+export const styleKeys = (i: Item) => (i.repo ? [...idsOf(i), i.repo] : idsOf(i));
+
 /** include → exclude 순. 어떤 규칙으로 몇 건 빠졌는지 요약용으로 센다 (plan 5, 4.7). */
 export function filterItems(items: Item[], cfg: Pick<Config, "include" | "exclude">, user: string) {
   const { include: inc, exclude: ex } = cfg;

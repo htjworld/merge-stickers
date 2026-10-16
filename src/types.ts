@@ -10,6 +10,7 @@ export interface Item {
   stars: number;
   language: { name: string; color: string | null } | null;
   imageUrl: string | null; // 커스텀 소셜 프리뷰일 때만
+  readmeImage?: string | null; // README의 첫 (배지 아닌) 이미지
   avatarUrl: string;
   source: "merged" | "copilot" | "landed" | "coauthored";
   aliases: string[];
