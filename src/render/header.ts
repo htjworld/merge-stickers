@@ -1,5 +1,6 @@
 import type { Config } from "../config/schema.js";
 import type { Item } from "../types.js";
+import { ICONS } from "./icons.js";
 import { rng } from "./seed.js";
 import { THEMES } from "./themes.js";
 
@@ -58,17 +59,14 @@ export function renderSlot(n: number, cfg: Config, dark: boolean): string {
 }
 
 /**
- * 헤더 양옆의 둥근 아이콘 버튼 (44x84, 헤더와 같은 높이). 라이트/다크 두 벌.
+ * 헤더 양옆의 둥근 아이콘 버튼 (44x84, 헤더와 같은 높이). 아이콘은 GitHub Octicons. 라이트/다크 두 벌.
  * README는 보는 사람을 구분할 수 없어서 모두에게 보이지만, 링크 대상은 레포 주인만 편집/실행할 수 있다.
  */
 export function renderButton(kind: "settings" | "fetch", cfg: Config, dark: boolean): string {
   const t = THEMES[cfg.theme], k = dark ? 1 : 0, ink = t.ink[k];
-  const icon = kind === "settings"
-    // 톱니바퀴: 점선 링(톱니) + 몸통 링 + 가운데 구멍
-    ? `<g fill="none" stroke="${ink}" stroke-linecap="butt"><circle cx="22" cy="42" r="8.4" stroke-width="3.4" stroke-dasharray="3.3 3.3"/><circle cx="22" cy="42" r="6" stroke-width="2.4"/><circle cx="22" cy="42" r="2.4" stroke-width="1.8"/></g>`
-    // 새로고침: 300도 호 + 화살촉
-    : `<g fill="none" stroke="${ink}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M28.5 36.5A8 8 0 1 0 30 42"/><path d="M29 31v6h-6"/></g>`;
+  // Octicons 24px를 0.85배로 버튼 중앙(22,42)에 놓는다
+  const icon = `<g transform="translate(11.8 31.8) scale(.85)" fill="${ink}">${ICONS[kind].map((d) => `<path d="${d}"/>`).join("")}</g>`;
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 84" width="44" height="84">` +
     `<circle cx="22" cy="42" r="17" fill="${t.paper[k]}" stroke="${ink}" stroke-opacity=".25" stroke-width="1.5"/>` +
-    `<g opacity=".75">${icon}</g></svg>`;
+    `<g opacity=".8">${icon}</g></svg>`;
 }

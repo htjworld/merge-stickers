@@ -32,3 +32,14 @@ test("세 번째 통계는 설정으로 바꾼다", () => {
   expect(svg).toContain(">SINCE<");
   expect(svg).toContain(">2024<");
 });
+
+test("버튼 아이콘은 직접 그린 도형이 아니라 Octicons path를 쓴다", async () => {
+  const { renderButton } = await import("../src/render/header.js");
+  const { ICONS } = await import("../src/render/icons.js");
+  for (const kind of ["settings", "fetch"] as const) {
+    const svg = renderButton(kind, cfg, false);
+    for (const d of ICONS[kind]) expect(svg).toContain(`d="${d}"`);
+  }
+  expect(renderButton("settings", cfg, false)).toContain("M12 1c.266"); // gear
+  expect(renderButton("fetch", cfg, false)).toContain("M3.38 8A9.502"); // sync
+});
