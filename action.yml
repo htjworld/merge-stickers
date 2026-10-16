@@ -1,0 +1,41 @@
+name: merge-stickers
+description: 내가 머지시킨 오픈소스 PR을 칭찬스티커판처럼 README에 붙여줍니다
+author: htjworld
+branding:
+  icon: award
+  color: orange
+inputs:
+  token:
+    description: GitHub 토큰. visibility가 all이면 repo 스코프 PAT가 필요합니다.
+    default: ${{ github.token }}
+  version:
+    description: 실행할 merge-stickers npm 버전
+    default: latest
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+    - uses: actions/cache@v4
+      with:
+        path: .merge-stickers/cache
+        key: merge-stickers-cache-${{ github.run_id }}
+        restore-keys: merge-stickers-cache-
+    - name: fetch and render
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.token }}
+      run: |
+        npx --yes merge-stickers@${{ inputs.version }} fetch
+        npx --yes merge-stickers@${{ inputs.version }} render
+        npx --yes merge-stickers@${{ inputs.version }} check
+    - name: commit if changed
+      shell: bash
+      run: |
+        git add -A -- . ':!.merge-stickers/cache'
+        if git diff --cached --quiet; then echo "no changes"; exit 0; fi
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git commit -m "chore: update merge-stickers"
+        git push
