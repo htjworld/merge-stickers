@@ -25,6 +25,9 @@ layout:
   order: asc                 # asc | desc
   groupBy: repo              # repo(레포당 스티커 1장, PR이 쌓일수록 단계 상승) | pr(PR마다 1장)
 
+header:
+  stat: stars                # 세 번째 통계: stars(기여한 레포 스타 합) | since | latest | owners
+
 theme: paper                 # paper | holo | midnight | minimal
 sticker:
   size: 72

@@ -1,28 +1,50 @@
 import type { Config } from "../config/schema.js";
 import type { Item } from "../types.js";
+import { rng } from "./seed.js";
 import { THEMES } from "./themes.js";
 
 const FONT = "-apple-system,'Segoe UI',Helvetica,Arial,sans-serif";
 
-export function stats(items: Item[], tz: string) {
-  const first = items.reduce<string | null>((m, i) => (m === null || i.mergedAt < m ? i.mergedAt : m), null);
-  const since = first ? new Date(first).toLocaleString("en-CA", { timeZone: tz, year: "numeric" }) : "-";
-  return { merged: items.length, repos: new Set(items.map((i) => i.repo).filter(Boolean)).size, since };
+/** 숫자 색은 시드로 고른다 (같은 사용자면 항상 같은 색, 라이트/다크 동일). 흰 배경에서도 읽히는 진한 톤. */
+const INK = ["#FF5C5C", "#FF8A1F", "#E6A700", "#14B87A", "#12A8C9", "#3D8BFF", "#9B5CF6", "#F25CA8"];
+
+const compact = (n: number) =>
+  n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${+(n / 1e3).toFixed(n < 1e4 ? 1 : 0)}K` : String(n);
+
+/** merged는 PR 수. 레포 단위로 묶인 타일이면 items.length와 다르므로 따로 받는다. */
+export function stats(items: Item[], tz: string, merged = items.length) {
+  const day = (iso: string, o: Intl.DateTimeFormatOptions) => new Date(iso).toLocaleString("en-CA", { timeZone: tz, ...o });
+  const dates = items.map((i) => i.mergedAt).sort();
+  const repos = new Map(items.filter((i) => i.repo).map((i) => [i.repo, i]));
+  return {
+    merged,
+    repos: repos.size,
+    stars: compact([...repos.values()].reduce((s, i) => s + (i.isPrivate ? 0 : i.stars), 0)), // 기여한 레포들의 스타 합
+    owners: new Set([...repos.values()].map((i) => i.owner)).size,
+    since: dates.length ? day(dates[0]!, { year: "numeric" }) : "-",
+    latest: dates.length ? day(dates[dates.length - 1]!, { month: "short", day: "numeric" }) : "-",
+  };
 }
 
-/** 도장 스타일 한 줄 통계. 라이트/다크 두 벌 (plan 3.7) */
-export function renderHeader(items: Item[], cfg: Config, dark: boolean): string {
+const THIRD = { stars: "STARS", since: "SINCE", latest: "LAST MERGE", owners: "OWNERS" } as const;
+
+/** 한 줄 통계 카드: 반듯한 실선 테두리, 숫자마다 랜덤(시드) 색. 라이트/다크 두 벌 (plan 3.7) */
+export function renderHeader(items: Item[], cfg: Config, dark: boolean, seed: string, merged = items.length): string {
   const t = THEMES[cfg.theme], k = dark ? 1 : 0;
-  const s = stats(items, cfg.timezone);
-  const cols = [[s.merged, "MERGED PRs"], [s.repos, "REPOS"], [s.since, "SINCE"]] as const;
+  const s = stats(items, cfg.timezone, merged);
+  const r = rng(`${seed}:header`);
+  const pool = [...INK];
+  const colors = [0, 1, 2].map(() => pool.splice(Math.floor(r() * pool.length), 1)[0]!); // 서로 다른 3색
+  const cols = [[s.merged, "MERGED PRs"], [s.repos, "REPOS"], [s[cfg.header.stat], THIRD[cfg.header.stat]]] as const;
   const cells = cols.map(([n, label], i) => {
     const x = 80 + i * 160;
-    return `<text x="${x}" y="44" text-anchor="middle" font-size="30" font-weight="800" fill="${t.accent[k]}">${n}</text>` +
-      `<text x="${x}" y="62" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1.5" fill="${t.ink[k]}" opacity=".6">${label}</text>`;
+    return `<text x="${x}" y="46" text-anchor="middle" font-size="30" font-weight="800" fill="${colors[i]}">${n}</text>` +
+      `<text x="${x}" y="64" text-anchor="middle" font-size="11" font-weight="600" letter-spacing="1.5" fill="${t.ink[k]}" opacity=".6">${label}</text>`;
   }).join("");
+  const dividers = [160, 320].map((x) => `<line x1="${x}" y1="18" x2="${x}" y2="66" stroke="${t.ink[k]}" stroke-opacity=".15"/>`).join("");
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 84" width="480" height="84" font-family="${FONT}">` +
-    `<g transform="rotate(-1.2 240 42)"><rect x="6" y="6" width="468" height="72" rx="14" fill="${t.paper[k]}" stroke="${t.ink[k]}" stroke-opacity=".45" stroke-width="2" stroke-dasharray="7 5"/>` +
-    `${cells}</g></svg>`;
+    `<rect x="2" y="2" width="476" height="80" rx="14" fill="${t.paper[k]}" stroke="${t.ink[k]}" stroke-opacity=".25" stroke-width="1.5"/>` +
+    `${dividers}${cells}</svg>`;
 }
 
 /** 번호가 적힌 빈 점선 원 (plan 3.6). 다음에 채워질 자리를 보여준다. */

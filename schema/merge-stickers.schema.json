@@ -235,6 +235,22 @@
         }
       }
     },
+    "header": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "stat": {
+          "default": "stars",
+          "type": "string",
+          "enum": [
+            "stars",
+            "since",
+            "latest",
+            "owners"
+          ]
+        }
+      }
+    },
     "theme": {
       "default": "paper",
       "type": "string",

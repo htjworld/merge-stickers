@@ -11,6 +11,6 @@ export function applyPrivate(items: Item[], cfg: Pick<Config, "visibility" | "pr
   return items.map((i) =>
     !i.isPrivate ? i : {
       ...i, key: `private#${i.id}`, repo: "", owner: "", title: "", url: "", avatarUrl: "", imageUrl: null,
-      language: null, aliases: [],
+      language: null, aliases: [], stars: 0,
     });
 }

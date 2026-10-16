@@ -48,9 +48,10 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string): { files: F
   const items = tiles.map((t) => t.item);
   const v = (name: string, svg: string) => { files.set(name, svg); return `${dir}/${name}?v=${hash(svg, 6)}`; };
 
-  const st = stats(items, cfg.timezone);
-  const hl = v("header-light.svg", renderHeader(items, cfg, false));
-  const hd = v("header-dark.svg", renderHeader(items, cfg, true));
+  const prs = tiles.reduce((n, t) => n + t.count, 0);
+  const st = stats(items, cfg.timezone, prs);
+  const hl = v("header-light.svg", renderHeader(items, cfg, false, seed, prs));
+  const hd = v("header-dark.svg", renderHeader(items, cfg, true, seed, prs));
   const w = cfg.sticker.size;
   const header = `<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
 

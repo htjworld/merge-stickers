@@ -35,6 +35,8 @@ test("groupBy: repo는 레포당 1장 + 카운트 뱃지, 링크는 검색 결�
   expect(r.snippet).toContain("https://github.com/acme/open/pulls?q=is:pr+author:me+is:merged");
   expect([...r.files.keys()].filter((k) => k.startsWith("stickers/"))).toHaveLength(1);
   expect([...r.files.values()].some((s) => s.includes(">x3<"))).toBe(true);
+  expect(r.files.get("header-light.svg")).toContain(">3<"); // 헤더의 머지 수는 PR 합계 (스티커 1장이어도 3)
+  expect(r.snippet).toContain("3 merged PRs across 1 repos");
 });
 
 test("private mask: 어떤 산출물에도 레포 이름, 제목, PR 번호 링크가 남지 않는다", () => {
