@@ -22,6 +22,7 @@ export async function runInit(args: string[]): Promise<string> {
   put(CONFIG_PATH, template("config.yml").replace("__VISIBILITY__", all ? "all" : "public"), log);
   put(".github/workflows/merge-stickers.yml", template("workflow.yml"), log);
   put("CLAUDE.md", template("CLAUDE.md"), log);
+  put(".claude/commands/curate.md", template("curate.md"), log);
 
   const block = `${START}\n${END}\n`;
   const readme = "README.md";
