@@ -2,3 +2,4 @@ node_modules/
 dist/
 .merge-stickers/cache/
 *.log
+.merge-stickers/merges.json
