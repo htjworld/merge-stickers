@@ -20,7 +20,7 @@ export async function runFetch(cfg: Config): Promise<string> {
   const changed = writeMerges({ generatedAt: new Date().toISOString(), user, items });
 
   const { items: shown, excluded } = filterItems(items, cfg, user);
-  const imgs = await downloadAll(shown.map((i) => imageSource(i, cfg).urls));
+  const imgs = await downloadAll(shown.map((i) => imageSource(i, cfg)));
   const lines = [
     `${user}: 머지 ${raw.length}건 수집, 보관 ${items.length}건 (사라진 항목 ${items.filter((i) => i.gone).length}건 보존)`,
     `표시 ${shown.length}건, 레포 ${new Set(shown.map((i) => i.repo).filter(Boolean)).size}개`,

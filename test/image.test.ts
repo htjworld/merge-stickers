@@ -1,4 +1,5 @@
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
+import { join } from "node:path";
 import sharp from "sharp";
 import { shrink, imageSource } from "../src/assets/image.js";
 import { configSchema } from "../src/config/schema.js";
@@ -22,4 +23,29 @@ test("이미지 선택: 지정 > README 첫 이미지 > 커스텀 소셜 > 아�
   expect(imageSource(it, configSchema.parse({ sticker: { image: "social" } })).urls).toEqual(["social", "avatar"]);
   expect(imageSource(it, configSchema.parse({ stickers: { "o/r": { image: "./x.png" } } })).local).toBe("./x.png");
   expect(imageSource({ ...it, readmeImage: null, imageUrl: null, avatarUrl: "" }, cfg).urls).toEqual([]);
+});
+
+test("README/소셜 이미지는 정사각형에 가까울 때만 쓰고, 스크린샷은 건너뛴다 (다시 받지 않음)", async () => {
+  const { mkdtempSync } = await import("node:fs");
+  const { tmpdir } = await import("node:os");
+  const { download } = await import("../src/assets/image.js");
+  const cwd = process.cwd();
+  process.chdir(mkdtempSync(join(tmpdir(), "ms-img-")));
+  const png = (w: number, h: number) =>
+    sharp({ create: { width: w, height: h, channels: 3, background: "#369" } }).png().toBuffer();
+  const calls: string[] = [];
+  vi.stubGlobal("fetch", async (u: string) => {
+    calls.push(u);
+    return new Response(await png(u.includes("wide") ? 1920 : 800, u.includes("wide") ? 1080 : 900));
+  });
+  try {
+    expect(await download("https://x/wide.png", true)).toBe("fail"); // 16:9 스크린샷
+    expect(await download("https://x/wide.png", true)).toBe("fail");
+    expect(calls).toHaveLength(1); // 두 번째는 .skip 표시 때문에 네트워크 없음
+    expect(await download("https://x/logo.png", true)).toBe("new"); // 0.89 로고
+    expect(await download("https://x/wide.png", false)).toBe("new"); // 아바타 같은 비검사 후보
+  } finally {
+    vi.unstubAllGlobals();
+    process.chdir(cwd);
+  }
 });
