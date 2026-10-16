@@ -5,7 +5,7 @@ import { renderHeader, renderSlot, stats } from "./header.js";
 import { renderSticker, prefixIds, CANVAS } from "./sticker.js";
 import { THEMES } from "./themes.js";
 
-export interface Tile { id: string; item: Item; image: string | null; count: number; href: string; alt: string }
+export interface Tile { id: string; item: Item; image: string | null; count: number; nth: number; href: string; alt: string }
 export type Files = Map<string, string>; // 출력 폴더 기준 상대경로 → 내용
 
 const hash = (s: string, n = 8) => createHash("sha1").update(s).digest("hex").slice(0, n);
@@ -14,7 +14,7 @@ const attr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").rep
 /** groupBy: repo면 레포당 1장(최신 PR 기준) + 개수 (plan 6.1) */
 export function toTiles(items: Item[], cfg: Config, user: string, images: (i: Item) => string | null): Tile[] {
   const sorted = [...items].sort((a, b) => a.mergedAt.localeCompare(b.mergedAt) || a.id.localeCompare(b.id));
-  const mk = (item: Item, count: number, href: string, alt: string): Tile => ({ id: hash(item.id), item, image: images(item), count, href, alt });
+  const mk = (item: Item, count: number, nth: number, href: string, alt: string): Tile => ({ id: hash(item.id), item, image: images(item), count, nth, href, alt });
   let tiles: Tile[];
   if (cfg.layout.groupBy === "repo") {
     const by = new Map<string, Item[]>();
@@ -22,10 +22,15 @@ export function toTiles(items: Item[], cfg: Config, user: string, images: (i: It
     tiles = [...by.values()].map((g) => {
       const last = g[g.length - 1]!;
       const href = last.repo ? `https://github.com/${last.repo}/pulls?q=is:pr+author:${user}+is:merged` : "";
-      return mk(last, g.length, href, last.repo ? `${last.repo} (${g.length})` : "private");
+      return mk(last, g.length, g.length, href, last.repo ? `${last.repo} (${g.length})` : "private");
     });
   } else {
-    tiles = sorted.map((i) => mk(i, 1, i.url, i.repo ? `${i.repo} #${i.key.split("#")[1]}` : "private"));
+    const seen = new Map<string, number>(); // PR 모드: 단계는 그 레포의 몇 번째 머지인지로 정한다
+    tiles = sorted.map((i) => {
+      const nth = (seen.get(i.repo || i.id) ?? 0) + 1;
+      seen.set(i.repo || i.id, nth);
+      return mk(i, 1, nth, i.url, i.repo ? `${i.repo} #${i.key.split("#")[1]}` : "private");
+    });
   }
   return cfg.layout.order === "desc" ? tiles.reverse() : tiles;
 }
@@ -52,7 +57,7 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string): { files: F
   if (cfg.output.mode === "sheet") return { files, snippet: sheet(tiles, cfg, seed, files, dir) };
 
   const cells = tiles.map((t) => {
-    const src = v(`stickers/${t.id}.svg`, renderSticker(t.item, cfg, seed, t.image, t.count));
+    const src = v(`stickers/${t.id}.svg`, renderSticker(t.item, cfg, seed, t.image, t.count, t.nth));
     const img = `<img src="${src}" width="${w}" alt="${attr(t.alt)}">`;
     return t.href ? `<a href="${attr(t.href)}" title="${attr(t.alt)}">${img}</a>` : img;
   });
@@ -81,7 +86,7 @@ function sheet(tiles: Tile[], cfg: Config, seed: string, files: Files, dir: stri
   const cols = cfg.layout.columns, rows = Math.ceil(tiles.length / cols) || 1, t = THEMES[cfg.theme];
   const inner = tiles.map((tile, i) =>
     `<svg x="${(i % cols) * CANVAS}" y="${Math.floor(i / cols) * CANVAS}" width="${CANVAS}" height="${CANVAS}" viewBox="0 0 96 96">` +
-    prefixIds(renderSticker(tile.item, cfg, seed, tile.image, tile.count), `s${i}_`).replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "") + "</svg>").join("");
+    prefixIds(renderSticker(tile.item, cfg, seed, tile.image, tile.count, tile.nth), `s${i}_`).replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "") + "</svg>").join("");
   const mk = (k: 0 | 1) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${cols * CANVAS} ${rows * CANVAS}"><rect width="100%" height="100%" rx="16" fill="${t.paper[k]}"/>${inner}</svg>`;
   files.set("board.svg", mk(0));
   files.set("board-dark.svg", mk(1));

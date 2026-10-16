@@ -20,7 +20,8 @@ const build = (items: Item[], c: object = {}) => {
 
 test("같은 입력이면 같은 출력, 클릭 링크는 PR로, 슬롯은 10의 배수까지", () => {
   const items = [item(1), item(2), item(3)];
-  const a = build(items), b = build(items);
+  const pr = { layout: { groupBy: "pr" } };
+  const a = build(items, pr), b = build(items, pr);
   expect(a.snippet).toBe(b.snippet);
   expect([...a.files]).toEqual([...b.files]);
   expect(a.snippet).toContain('<a href="https://github.com/acme/open/pull/2"');

@@ -18,5 +18,6 @@
 
 - 특정 레포 빼기: `exclude.repos`에 이름이나 glob (`"my-company/*"`)
 - PR 하나 빼기: `exclude.prs`에 `"owner/repo#123"`
-- 스티커 하나 꾸미기: `stickers."owner/repo#123"`에 `shape`, `finish`, `rotate`, `image`
+- 스티커 꾸미기: `stickers."owner/repo"`(레포 전체) 또는 `"owner/repo#123"`(PR 하나)에 `shape`, `finish`, `rotate`, `image`, `tier`
+- 단계(흰색 > 컬러 > 동 > 은 > 금 > 플래티넘 > 다이아): 레포의 PR 개수로 자동 결정. 전부 고정하려면 `sticker.tier`, 기준 개수는 `sticker.thresholds`
 - 데이터를 새로 받아야 하는 변경(`visibility`, `private.display`)은 `npx merge-stickers fetch` 후 `render`

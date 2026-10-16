@@ -9,9 +9,9 @@ const item = (id: string, o: Partial<Item> = {}): Item => ({
 });
 const cfg = configSchema.parse({});
 
-test("같은 입력이면 같은 출력, 다른 PR이면 다른 출력", () => {
+test("같은 입력이면 같은 출력, 다른 레포면 다른 출력", () => {
   expect(renderSticker(item("1"), cfg, "s", null)).toBe(renderSticker(item("1"), cfg, "s", null));
-  expect(renderSticker(item("1"), cfg, "s", null)).not.toBe(renderSticker(item("2"), cfg, "s", null));
+  expect(renderSticker(item("1"), cfg, "s", null)).not.toBe(renderSticker(item("2", { repo: "o/other" }), cfg, "s", null));
 });
 
 test("variation 0이면 회전, 흔들림 없이 모두 같은 정렬", () => {

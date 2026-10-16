@@ -1,7 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import type { Config } from "./config/schema.js";
-import { idsOf } from "./curate/filter.js";
+import { styleKeys } from "./curate/filter.js";
 import { readMerges } from "./store.js";
 
 const MAX_SVG = 30 * 1024; // 이미지 예산 15KB(base64 약 20KB) + 장식 여유
@@ -31,7 +31,7 @@ export function runCheck(cfg: Config): string {
   }
 
   // 2. config 키가 아무것에도 안 맞는 경우 (레포 이름 변경 등) (plan 4.8)
-  const known = new Set(merges.items.flatMap((i) => idsOf(i).map((k) => k.toLowerCase())));
+  const known = new Set(merges.items.flatMap((i) => styleKeys(i).map((k) => k.toLowerCase())));
   for (const k of [...Object.keys(cfg.stickers), ...cfg.exclude.prs])
     if (!known.has(k.toLowerCase())) warns.push(`config 키가 어떤 PR과도 맞지 않음: ${k}`);
 

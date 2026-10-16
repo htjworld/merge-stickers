@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { imageFor } from "./assets/image.js";
 import type { Config } from "./config/schema.js";
-import { filterItems, idsOf } from "./curate/filter.js";
+import { filterItems, styleKeys } from "./curate/filter.js";
 import { applyPrivate } from "./curate/private.js";
 import { readMerges } from "./store.js";
 import { buildBoard, toTiles } from "./render/board.js";
@@ -15,7 +15,7 @@ export async function runRender(cfg: Config): Promise<string> {
   const user = cfg.user ?? merges.user;
 
   const { items } = filterItems(applyPrivate(merges.items, cfg), cfg, user);
-  const shown = items.filter((i) => !idsOf(i).some((k) => cfg.stickers[k]?.hidden));
+  const shown = items.filter((i) => !styleKeys(i).some((k) => cfg.stickers[k]?.hidden));
   const imgs = new Map(await Promise.all(shown.map(async (i) => [i.id, await imageFor(i, cfg)] as const)));
   const { files, snippet } = buildBoard(toTiles(shown, cfg, user, (i) => imgs.get(i.id) ?? null), cfg, cfg.sticker.seed ?? user);
 

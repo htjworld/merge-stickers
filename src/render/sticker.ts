@@ -1,33 +1,40 @@
 import type { Config } from "../config/schema.js";
-import { idsOf } from "../curate/filter.js";
+import { styleKeys } from "../curate/filter.js";
 import type { Item } from "../types.js";
 import { pick, range, rng, weighted } from "./seed.js";
 import { PATHS, SHAPES, type Shape } from "./shapes.js";
 import { THEMES, type Finish, type Theme } from "./themes.js";
+import { CSS, isMetal, ringFor, tierFor, type Tier } from "./tiers.js";
 
 export const CANVAS = 96;
 
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
 const f = (n: number) => +n.toFixed(2);
 
-/** 시드로 정해지는 스티커 1장의 모양. 값을 뽑는 순서를 바꾸면 기존 결과가 바뀌니 고정한다. */
-export function look(item: Item, cfg: Config, seed: string) {
+/**
+ * 스티커 1장의 모양. 시드는 레포 단위라 같은 레포는 항상 같은 모양(도형, 각도, 위치, 마감)이다 (plan 3.2).
+ * nth는 그 레포의 몇 번째 머지인지 (단계 결정). 값을 뽑는 순서를 바꾸면 기존 결과가 바뀌니 고정한다.
+ */
+export function look(item: Item, cfg: Config, seed: string, nth = 1) {
   const theme = THEMES[cfg.theme];
-  const r = rng(`${seed}:${item.id}`);
+  const r = rng(`${seed}:${item.repo || item.id}`);
   const v = cfg.sticker.variation * theme.variation;
-  const o = cfg.stickers[idsOf(item).find((k) => cfg.stickers[k]) ?? ""] ?? {};
+  const o = cfg.stickers[styleKeys(item).find((k) => cfg.stickers[k]) ?? ""] ?? {};
   const shape: Shape = o.shape ?? (v === 0 ? "circle" : pick(r, SHAPES));
-  const finish: Finish = o.finish ?? weighted(r, theme.finish);
+  const rolled = weighted(r, theme.finish);
   const rotate = o.rotate ?? range(r, -12, 12) * v;
   const scale = 1 + range(r, -0.06, 0.06) * v;
-  const dx = range(r, -8, 8) * v;
-  const dy = range(r, -8, 8) * v;
-  const border = pick(r, theme.borders);
-  const borderW = range(r, 4, 5.5);
+  const dx = range(r, -6, 6) * v; // 흔들림 한도 = 캔버스 여백 (글로우가 안 잘리게)
+  const dy = range(r, -6, 6) * v;
+  const colorIdx = Math.floor(r() * 8);
   const tape = r() < 0.1 * Math.min(1, v * 2);
   const peel = r() < 0.15 * Math.min(1, v * 2);
   const tapeRot = range(r, -10, 10);
-  return { shape, finish, rotate, scale, dx, dy, border, borderW, tape, peel, tapeRot, theme };
+  const delay = r() * 3;
+  const tier: Tier = o.tier ?? (cfg.sticker.tier !== "auto" ? cfg.sticker.tier : tierFor(nth, cfg.sticker.thresholds));
+  // 메탈 단계의 면 마감은 단계가 정한다 (플래티넘=홀로, 나머지=광택)
+  const finish: Finish = o.finish ?? (tier === "platinum" ? "holo" : isMetal(tier) ? "glossy" : rolled);
+  return { shape, finish, rotate, scale, dx, dy, colorIdx, tape, peel, tapeRot, delay, tier, theme };
 }
 
 function fallback(item: Item, theme: Theme): string {
@@ -43,17 +50,16 @@ function fallback(item: Item, theme: Theme): string {
 }
 
 /** image는 이미 리사이즈된 data URI. 없으면 언어색 이니셜 폴백. */
-export function renderSticker(item: Item, cfg: Config, seed: string, image: string | null, count = 1): string {
-  const L = look(item, cfg, seed);
+export function renderSticker(item: Item, cfg: Config, seed: string, image: string | null, count = 1, nth = count): string {
+  const L = look(item, cfg, seed, nth);
   const d = PATHS[L.shape];
-  const foil = L.finish === "foil";
-  const stroke = foil ? "url(#foil)" : L.border;
+  const R = ringFor(L.tier, d, { n: nth, colorIdx: L.colorIdx, white: L.theme.borders[0]!, foil: L.finish === "foil", animate: cfg.sticker.animate, delay: L.delay });
   const content = image
     ? `<image href="${image}" x="12" y="12" width="72" height="72" preserveAspectRatio="xMidYMid slice"/>`
     : fallback(item, L.theme);
   const shine = L.finish === "matte" ? "" :
     `<g clip-path="url(#c)"><rect x="0" y="0" width="96" height="96" fill="url(#shine)"/>` +
-    (L.finish === "holo" ? `<rect x="0" y="0" width="96" height="96" fill="url(#holo)" opacity=".4"/>` : "") + `</g>`;
+    (L.finish === "holo" ? `<rect x="0" y="0" width="96" height="96" fill="url(#holo)" opacity=".3"/>` : "") + `</g>`;
   const tape = L.tape
     ? `<g transform="translate(48 20) rotate(${f(L.tapeRot)})"><rect x="-17" y="-5" width="34" height="10" fill="${L.theme.tape[0]}" opacity=".85"/>` +
       `<rect x="-17" y="-5" width="34" height="10" fill="url(#stripes)"/></g>`
@@ -72,12 +78,12 @@ export function renderSticker(item: Item, cfg: Config, seed: string, image: stri
     `<filter id="s" x="-25%" y="-25%" width="150%" height="160%"><feDropShadow dx="0" dy="2" stdDeviation="1.6" flood-color="#000" flood-opacity="${L.theme.shadow}"/></filter>` +
     `<linearGradient id="shine" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset=".35" stop-color="#fff" stop-opacity=".12"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
     `<linearGradient id="holo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7ad9"/><stop offset=".33" stop-color="#7ad7ff"/><stop offset=".66" stop-color="#b6ff7a"/><stop offset="1" stop-color="#ffe27a"/></linearGradient>` +
-    `<linearGradient id="foil" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FCEFB4"/><stop offset=".5" stop-color="#D4A72C"/><stop offset="1" stop-color="#F7E08A"/></linearGradient>` +
+    `${R.defs}${isMetal(L.tier) && cfg.sticker.animate ? `<style>${CSS}</style>` : ""}` +
     `<pattern id="stripes" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3" height="6" fill="#fff" opacity=".35"/></pattern>` +
     `</defs>` +
     `<g transform="translate(${f(L.dx)} ${f(L.dy)}) translate(48 48) rotate(${f(L.rotate)}) scale(${f(L.scale)}) translate(-48 -48)" filter="url(#s)">` +
-    `<path d="${d}" fill="${stroke}" stroke="${stroke}" stroke-width="${f(L.borderW * 2)}" stroke-linejoin="round"/>` +
-    `<g clip-path="url(#c)">${content}</g>${shine}${peel}${tape}</g>${badge}</svg>`;
+    `${R.under}${R.ring}` +
+    `<g clip-path="url(#c)">${content}</g>${shine}${R.over}${peel}${tape}</g>${badge}</svg>`;
 }
 
 /** 한 문서에 여러 스티커를 넣을 때(board.svg 시트) id 충돌을 막는다. */

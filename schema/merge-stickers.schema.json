@@ -152,7 +152,7 @@
           ]
         },
         "groupBy": {
-          "default": "pr",
+          "default": "repo",
           "type": "string",
           "enum": [
             "pr",
@@ -268,10 +268,68 @@
           "type": "string",
           "enum": [
             "auto",
-            "avatar",
+            "readme",
             "social",
+            "avatar",
             "language"
           ]
+        },
+        "tier": {
+          "default": "auto",
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "auto"
+            },
+            {
+              "type": "string",
+              "enum": [
+                "white",
+                "color",
+                "bronze",
+                "silver",
+                "gold",
+                "platinum",
+                "diamond"
+              ]
+            }
+          ]
+        },
+        "thresholds": {
+          "default": {},
+          "type": "object",
+          "properties": {
+            "bronze": {
+              "default": 10,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "silver": {
+              "default": 20,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "gold": {
+              "default": 30,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "platinum": {
+              "default": 40,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            },
+            "diamond": {
+              "default": 50,
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          }
         },
         "showDate": {
           "default": false,
@@ -286,7 +344,7 @@
           "type": "boolean"
         },
         "animate": {
-          "default": false,
+          "default": true,
           "type": "boolean"
         }
       }
@@ -346,6 +404,18 @@
               "matte",
               "holo",
               "foil"
+            ]
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "white",
+              "color",
+              "bronze",
+              "silver",
+              "gold",
+              "platinum",
+              "diamond"
             ]
           },
           "image": {

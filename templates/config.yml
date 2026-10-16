@@ -23,13 +23,21 @@ layout:
   columns: 10
   slots: auto                # auto | 숫자 | none
   order: asc                 # asc | desc
-  groupBy: pr                # pr | repo
+  groupBy: repo              # repo(레포당 스티커 1장, PR이 쌓일수록 단계 상승) | pr(PR마다 1장)
 
 theme: paper                 # paper | holo | midnight | minimal
 sticker:
   size: 72
   variation: 0.6             # 0(정렬) ~ 1(자유분방)
-  image: auto                # auto | avatar | social | language
+  image: auto                # auto(README 첫 이미지 > 소셜 프리뷰 > 아바타) | readme | social | avatar | language
+  animate: true              # 동 이상 단계의 반짝임 (끄면 정지 이미지)
+  tier: auto                 # auto | white color bronze silver gold platinum diamond (전부 한 단계로 고정)
+  thresholds:                # 레포의 PR이 몇 개일 때 해당 단계가 되는지
+    bronze: 10
+    silver: 20
+    gold: 30
+    platinum: 40
+    diamond: 50
 
 output:
   mode: html                 # html(클릭 가능) | table | sheet
@@ -38,7 +46,8 @@ output:
 
 # 개별 스티커 수정 예시
 # stickers:
-#   "owner/repo#123":
+#   "owner/repo":              # 레포 이름으로 쓰면 그 레포 스티커 전체, "owner/repo#123"이면 PR 하나
+#     tier: diamond          # 단계 강제 (white color bronze silver gold platinum diamond)
 #     shape: star-badge      # circle squircle rounded-square hexagon star-badge shield cloud scallop
 #     finish: holo           # glossy matte holo foil
 #     rotate: 8
