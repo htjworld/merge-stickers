@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## Bagel Fat One (로고 글자 윤곽)
+## Rubik Bubbles (로고 글자 윤곽)
 
-로고(`src/render/logo.ts`)의 글자 윤곽은 Bagel Fat One(Copyright 2021 The Bagel Fat One Project Authors, https://fonts.google.com/specimen/Bagel+Fat+One)에서 뽑은 path입니다.
+로고(`src/render/logo.ts`)의 글자 윤곽은 Rubik Bubbles(Copyright 2020 The Rubik Filtered Project Authors, https://github.com/NaN-xyz/Rubik-Filtered)에서 뽑은 path입니다.
 SIL Open Font License 1.1 (https://openfontlicense.org)에 따라 사용합니다.

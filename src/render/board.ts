@@ -63,7 +63,7 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string, buttons: { 
   };
   const side = cfg.header.buttons && buttons ? btn("settings", buttons.settings, "left") + btn("fetch", buttons.fetch, "right") : "";
   const logo = cfg.header.logo
-    ? `<p align="center"><a href="${HOME}" title="merge-stickers"><picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(cfg, true))}"><img src="${v("logo-light.svg", renderWordmark(cfg, false))}" width="300" alt="MERGE STICKERS"></picture></a></p>
+    ? `<p align="center"><a href="${HOME}" title="merge-stickers"><picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(true))}"><img src="${v("logo-light.svg", renderWordmark(false))}" width="280" alt="MERGE STICKERS"></picture></a></p>
 `
     : "";
   const header = `${logo}<p align="center">${side}<picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
