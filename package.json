@@ -1,0 +1,35 @@
+{
+  "name": "merge-stickers",
+  "version": "0.1.0",
+  "description": "내가 머지시킨 오픈소스 PR을 칭찬스티커판처럼 README에 붙여주는 도구",
+  "type": "module",
+  "bin": {
+    "merge-stickers": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "schema"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup src/cli.ts --format esm --clean",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsup": "^9.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
+}

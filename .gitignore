@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.merge-stickers/cache/
+*.log
