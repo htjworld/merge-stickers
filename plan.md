@@ -398,12 +398,12 @@ exclude:
 
 | 토큰 | 라이트 | 다크 |
 |---|---|---|
-| paper | `#FBF8F1` | `#161B22` |
-| ink | `#2B2A27` | `#E6EDF3` |
+| paper | `#F6F7FB` | `#161B22` |
+| ink | `#1F2433` | `#E6EDF3` |
 | grid | ink 8% | ink 8% |
 | weekend | `#F4EFE4` | `#1C222B` |
-| accent | `#FF6B4A` | `#FF8A6B` |
-| tape | `#F7D774` | `#8A6D1F` |
+| accent | `#6C63FF` | `#8F89FF` |
+| tape | `#FFC8DD` | `#7A3B55` |
 | grain 불투명도 | 0.05 | 0.07 |
 
 - 다크 종이색은 GitHub 다크 배경 `#0d1117`보다 한 단계 밝게 잡아서 "배경 위에 놓인 종이 한 장"으로 보이게 합니다.

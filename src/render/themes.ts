@@ -17,10 +17,10 @@ export interface Theme {
 // 토큰 이름은 공통, 값만 다르다 (plan 6.2.5)
 export const THEMES: Record<Config["theme"], Theme> = {
   paper: {
-    borders: ["#FFFFFF", "#FFFDF5", "#FFF3E0", "#E8F5E9", "#E3F2FD"],
+    borders: ["#FFFFFF", "#F3F0FF", "#EAF6FF", "#E9F8F1", "#FFEEF4"],
     finish: { glossy: 60, matte: 20, holo: 15, foil: 5 },
-    paper: ["#FBF8F1", "#161B22"], ink: ["#2B2A27", "#E6EDF3"], accent: ["#FF6B4A", "#FF8A6B"],
-    tape: ["#F7D774", "#8A6D1F"], slot: ["#D9D2C0", "#3A4350"], shadow: 0.25, variation: 1,
+    paper: ["#F6F7FB", "#161B22"], ink: ["#1F2433", "#E6EDF3"], accent: ["#6C63FF", "#8F89FF"],
+    tape: ["#FFC8DD", "#7A3B55"], slot: ["#CDD3E6", "#3A4350"], shadow: 0.25, variation: 1,
   },
   holo: {
     borders: ["#FFFFFF", "#F3E8FF", "#E0F7FA", "#FCE4EC"],

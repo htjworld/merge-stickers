@@ -21,6 +21,6 @@ repos.forEach(([name, color], row) => {
   });
 });
 const w = counts.length * CANVAS, h = repos.length * CANVAS;
-const bg = cfg.theme === "midnight" ? "#10141C" : "#FBF8F1";
+const bg = cfg.theme === "midnight" ? "#10141C" : "#F6F7FB";
 const sheet = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="${bg}"/>${body}</svg>`;
 writeFileSync(process.argv[2] ?? "preview.png", new Resvg(sheet, { fitTo: { mode: "zoom", value: Number(process.env.ZOOM ?? 1.3) } }).render().asPng());
