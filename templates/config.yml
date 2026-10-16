@@ -50,7 +50,7 @@ output:
 # 개별 스티커 수정 예시
 # stickers:
 #   "owner/repo":              # 레포 이름으로 쓰면 그 레포 스티커 전체, "owner/repo#123"이면 PR 하나
-#     color: "#FF6B6B"       # 컬러 단계 테두리색 (기본은 레포 이름으로 정해지는 고유색)
+#     color: "#FF6B6B"       # 컬러 단계 테두리색 (기본은 스티커마다 고유색)
 #     tier: diamond          # 단계 강제 (white color bronze silver gold platinum diamond)
 #     shape: star-badge      # circle squircle rounded-square hexagon star-badge shield cloud scallop
 #     finish: holo           # glossy matte holo foil

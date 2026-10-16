@@ -9,11 +9,12 @@ export const BORDER_EM = 0.045;
 export const BORDER = 60 * BORDER_EM;
 
 /**
- * 레포마다 고유한 색. 레포 이름만으로 정해져서 누가 만들어도 같은 레포는 항상 같은 색이다.
- * 색상(0.01° 단위) x 채도 x 명도라 사실상 겹치지 않고, 채도와 명도는 범위를 둬서 탁하거나 흐린 색은 피한다.
+ * 스티커마다 고유한 색 (흰색과 메탈 단계 제외). key는 PR id라 같은 PR은 항상 같은 색이고,
+ * 모든 스티커가 서로 다른 색이다. 색상(0.01° 단위) x 채도 x 명도라 사실상 겹치지 않고,
+ * 채도와 명도는 범위를 둬서 탁하거나 흐린 색은 피한다.
  */
-export function repoColor(repo: string): string {
-  const r = rng(`color:${repo}`);
+export function stickerColor(key: string): string {
+  const r = rng(`color:${key}`);
   const h = r() * 360, s = 0.65 + r() * 0.25, l = 0.5 + r() * 0.12;
   const k = (n: number) => (n + h / 30) % 12;
   const a = s * Math.min(l, 1 - l);

@@ -4,7 +4,7 @@ import type { Item } from "../types.js";
 import { pick, range, rng, weighted } from "./seed.js";
 import { PATHS, SHAPES, type Shape } from "./shapes.js";
 import { THEMES, type Finish, type Theme } from "./themes.js";
-import { CSS, isMetal, repoColor, ringFor, tierFor, type Tier } from "./tiers.js";
+import { CSS, isMetal, stickerColor, ringFor, tierFor, type Tier } from "./tiers.js";
 
 export const CANVAS = 96;
 
@@ -30,7 +30,8 @@ export function look(item: Item, cfg: Config, seed: string, nth = 1) {
   const peel = r() < 0.15 * Math.min(1, v * 2);
   const tapeRot = range(r, -10, 10);
   const delay = r() * 3;
-  const color = o.color ?? repoColor(item.repo || item.id);
+  // 색 키: PR마다(기본) 또는 레포마다(groupBy: repo). 설정의 color가 있으면 그 색.
+  const color = o.color ?? stickerColor(cfg.layout.groupBy === "repo" ? item.repo || item.id : item.id);
   const tier: Tier = o.tier ?? (cfg.sticker.tier !== "auto" ? cfg.sticker.tier : tierFor(nth, cfg.sticker.thresholds));
   // 메탈 단계의 면 마감은 단계가 정한다 (플래티넘=홀로, 나머지=광택)
   const finish: Finish = o.finish ?? (tier === "platinum" ? "holo" : isMetal(tier) ? "glossy" : rolled);
