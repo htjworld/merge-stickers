@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string"
+    },
+    "timezone": {
+      "default": "Asia/Seoul",
+      "type": "string"
+    },
+    "fetch": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "copilot": {
+          "default": false,
+          "type": "boolean"
+        },
+        "landed": {
+          "default": false,
+          "type": "boolean"
+        },
+        "coauthored": {
+          "default": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "visibility": {
+      "default": "public",
+      "type": "string",
+      "enum": [
+        "public",
+        "all"
+      ]
+    },
+    "private": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "display": {
+          "default": "mask",
+          "type": "string",
+          "enum": [
+            "mask",
+            "hide",
+            "show"
+          ]
+        }
+      }
+    },
+    "include": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "own": {
+          "default": false,
+          "type": "boolean"
+        },
+        "owners": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "exclude": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "repos": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "prs": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "titleContains": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "before": {
+          "default": null,
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "minStars": {
+          "default": 0,
+          "type": "number"
+        }
+      }
+    },
+    "layout": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "type": {
+          "default": "board",
+          "type": "string",
+          "enum": [
+            "board",
+            "calendar"
+          ]
+        },
+        "columns": {
+          "default": 10,
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "slots": {
+          "default": "auto",
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "auto"
+            },
+            {
+              "type": "string",
+              "const": "none"
+            },
+            {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          ]
+        },
+        "order": {
+          "default": "asc",
+          "type": "string",
+          "enum": [
+            "asc",
+            "desc"
+          ]
+        },
+        "groupBy": {
+          "default": "pr",
+          "type": "string",
+          "enum": [
+            "pr",
+            "repo"
+          ]
+        },
+        "monthLabels": {
+          "default": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "calendar": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "view": {
+          "default": "month",
+          "type": "string",
+          "enum": [
+            "month",
+            "strip",
+            "year"
+          ]
+        },
+        "months": {
+          "default": "active",
+          "anyOf": [
+            {
+              "type": "string",
+              "const": "active"
+            },
+            {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "maximum": 9007199254740991
+            }
+          ]
+        },
+        "expanded": {
+          "default": 3,
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991
+        },
+        "link": {
+          "default": "search",
+          "type": "string",
+          "enum": [
+            "search",
+            "strip",
+            "tiles",
+            "pages",
+            "none"
+          ]
+        },
+        "weekStart": {
+          "default": "mon",
+          "type": "string",
+          "enum": [
+            "mon",
+            "sun"
+          ]
+        },
+        "locale": {
+          "default": "en",
+          "type": "string",
+          "enum": [
+            "en",
+            "ko"
+          ]
+        },
+        "tape": {
+          "default": true,
+          "type": "boolean"
+        },
+        "texture": {
+          "default": true,
+          "type": "boolean"
+        }
+      }
+    },
+    "theme": {
+      "default": "paper",
+      "type": "string",
+      "enum": [
+        "paper",
+        "holo",
+        "midnight",
+        "minimal"
+      ]
+    },
+    "sticker": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "size": {
+          "default": 72,
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "variation": {
+          "default": 0.6,
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "seed": {
+          "type": "string"
+        },
+        "image": {
+          "default": "auto",
+          "type": "string",
+          "enum": [
+            "auto",
+            "avatar",
+            "social",
+            "language"
+          ]
+        },
+        "showDate": {
+          "default": false,
+          "type": "boolean"
+        },
+        "showCount": {
+          "default": true,
+          "type": "boolean"
+        },
+        "special": {
+          "default": true,
+          "type": "boolean"
+        },
+        "animate": {
+          "default": false,
+          "type": "boolean"
+        }
+      }
+    },
+    "output": {
+      "default": {},
+      "type": "object",
+      "properties": {
+        "mode": {
+          "default": "html",
+          "type": "string",
+          "enum": [
+            "html",
+            "table",
+            "sheet"
+          ]
+        },
+        "dir": {
+          "default": "assets/merge-stickers",
+          "type": "string"
+        },
+        "readme": {
+          "default": "README.md",
+          "type": "string"
+        }
+      }
+    },
+    "stickers": {
+      "default": {},
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "shape": {
+            "type": "string",
+            "enum": [
+              "circle",
+              "squircle",
+              "rounded-square",
+              "hexagon",
+              "star-badge",
+              "shield",
+              "cloud",
+              "scallop"
+            ]
+          },
+          "rotate": {
+            "type": "number"
+          },
+          "finish": {
+            "type": "string",
+            "enum": [
+              "glossy",
+              "matte",
+              "holo",
+              "foil"
+            ]
+          },
+          "image": {
+            "type": "string"
+          },
+          "hidden": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -18,7 +18,8 @@
     "build": "tsup src/cli.ts --format esm --clean",
     "dev": "tsx src/cli.ts",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "schema": "tsx scripts/gen-schema.ts"
   },
   "license": "MIT",
   "dependencies": {

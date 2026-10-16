@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/htjworld/merge-stickers/main/schema/merge-stickers.schema.json
 # merge-stickers 설정. 사람(또는 Claude Code)이 고치는 파일은 이것 하나뿐입니다.
 # 고친 뒤: npx merge-stickers render  (네트워크 없이 다시 그림)
 # user를 생략하면 자동 감지합니다 (Actions: 레포 오너, 로컬: 토큰 소유자).
