@@ -152,7 +152,7 @@
           ]
         },
         "groupBy": {
-          "default": "repo",
+          "default": "pr",
           "type": "string",
           "enum": [
             "pr",

@@ -31,7 +31,7 @@ export const configSchema = z.object({
     columns: z.number().int().positive().default(10),
     slots: z.union([z.literal("auto"), z.literal("none"), z.number().int().positive()]).default("auto"),
     order: z.enum(["asc", "desc"]).default("asc"),
-    groupBy: z.enum(["pr", "repo"]).default("repo"),
+    groupBy: z.enum(["pr", "repo"]).default("pr"),
     monthLabels: z.boolean().default(false),
   }).prefault({}),
   calendar: z.object({

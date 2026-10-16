@@ -20,11 +20,12 @@ const build = (items: Item[], c: object = {}) => {
 
 test("같은 입력이면 같은 출력, 클릭 링크는 PR로, 슬롯은 10의 배수까지", () => {
   const items = [item(1), item(2), item(3)];
-  const pr = { layout: { groupBy: "pr" } };
+  const pr = {}; // 기본값이 PR마다 1장
   const a = build(items, pr), b = build(items, pr);
   expect(a.snippet).toBe(b.snippet);
   expect([...a.files]).toEqual([...b.files]);
   expect(a.snippet).toContain('<a href="https://github.com/acme/open/pull/2"');
+  expect([...a.files.keys()].filter((k) => k.startsWith("stickers/"))).toHaveLength(3);
   expect(a.snippet).toContain("slots/10-light.svg");
   expect(a.snippet).not.toContain("slots/11-");
   expect(a.snippet).not.toMatch(/<\/a>\s+<a|<\/picture>\s+<picture/); // 태그 사이 공백 금지

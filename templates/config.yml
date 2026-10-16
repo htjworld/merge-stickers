@@ -23,7 +23,7 @@ layout:
   columns: 10
   slots: auto                # auto | 숫자 | none
   order: asc                 # asc | desc
-  groupBy: repo              # repo(레포당 스티커 1장, PR이 쌓일수록 단계 상승) | pr(PR마다 1장)
+  groupBy: pr                # pr(PR마다 스티커 1장, 레포의 N번째 머지가 단계 결정) | repo(레포당 1장 + xN)
 
 header:
   stat: stars                # 세 번째 통계: stars(기여한 레포 스타 합) | since | latest | owners
