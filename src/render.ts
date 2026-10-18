@@ -24,7 +24,7 @@ export async function runRender(cfg: Config): Promise<string> {
 
   // 생성물 폴더는 통째로 다시 쓴다 (빠진 스티커 파일이 남지 않게)
   const dir = cfg.output.dir;
-  for (const sub of ["stickers", "slots"]) rmSync(join(dir, sub), { recursive: true, force: true });
+  for (const sub of ["stickers", "slots", "frame"]) rmSync(join(dir, sub), { recursive: true, force: true });
   for (const [name, svg] of files) {
     const p = join(dir, name);
     mkdirSync(dirname(p), { recursive: true });
