@@ -49,8 +49,9 @@ test("visibility: private는 private만, public은 public만, all은 둘 다", (
   expect(masked.repo).toBe(""); // private만 볼 때도 이름은 마스킹
 });
 
-test("헤더 숫자 색: 지정한 색은 그대로, auto는 지정색과 겹치지 않는 다른 색", () => {
-  const cfg = configSchema.parse({ header: { colors: { merged: "#112233", repos: "auto", third: "auto" } } });
+test("헤더 숫자 색: 기본은 3색, 지정한 색은 그대로, random은 지정색과 겹치지 않는 다른 색", () => {
+  expect([...renderHeader([it("a", false)], configSchema.parse({}), false, "me").matchAll(/font-weight="800" fill="(#\w+)"/g)].map((m) => m[1])).toEqual(["#4FA5DE", "#1EE1A0", "#EB2D7D"]);
+  const cfg = configSchema.parse({ header: { colors: { merged: "#112233", repos: "random", third: "random" } } });
   const svg = renderHeader([it("a", false)], cfg, false, "me");
   const fills = [...svg.matchAll(/font-weight="800" fill="(#\w+)"/g)].map((m) => m[1]);
   expect(fills[0]).toBe("#112233");

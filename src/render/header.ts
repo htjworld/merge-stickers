@@ -8,6 +8,8 @@ const FONT = "-apple-system,'Segoe UI',Helvetica,Arial,sans-serif";
 
 /** 숫자 색은 시드로 고른다 (같은 사용자면 항상 같은 색, 라이트/다크 동일). 흰 배경에서도 읽히는 진한 톤. */
 const INK = ["#FF5C5C", "#FF8A1F", "#E6A700", "#14B87A", "#12A8C9", "#3D8BFF", "#9B5CF6", "#F25CA8"];
+/** auto일 때의 기본 색. MERGED PRs, REPOS, 세 번째 순서로 HTJ 로고의 시안을 하늘색 쪽으로 옮긴 색, 민트, 핑크. */
+const DEFAULT = ["#4FA5DE", "#1EE1A0", "#EB2D7D"];
 
 const compact = (n: number) =>
   n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${+(n / 1e3).toFixed(n < 1e4 ? 1 : 0)}K` : String(n);
@@ -29,15 +31,15 @@ export function stats(items: Item[], tz: string, merged = items.length) {
 
 const THIRD = { stars: "STARS", since: "SINCE", latest: "LAST MERGE", owners: "OWNERS" } as const;
 
-/** 한 줄 통계 카드: 반듯한 실선 테두리, 숫자마다 랜덤(시드) 색. 라이트/다크 두 벌 (plan 3.7) */
+/** 한 줄 통계 카드: 반듯한 실선 테두리, 숫자 색은 기본 3색(설정으로 변경). 라이트/다크 두 벌 (plan 3.7) */
 export function renderHeader(items: Item[], cfg: Config, dark: boolean, seed: string, merged = items.length): string {
   const t = THEMES[cfg.theme], k = dark ? 1 : 0;
   const s = stats(items, cfg.timezone, merged);
   const r = rng(`${seed}:header`);
-  // 지정한 색(#RRGGBB)은 그대로, auto는 시드로 뽑되 지정한 색과도 서로 겹치지 않게
-  const want = [cfg.header.colors.merged, cfg.header.colors.repos, cfg.header.colors.third];
+  // auto는 기본 색, #RRGGBB는 그대로, random은 시드로 뽑되 다른 칸 색과 겹치지 않게
+  const want = [cfg.header.colors.merged, cfg.header.colors.repos, cfg.header.colors.third].map((w, i) => (w === "auto" ? DEFAULT[i]! : w));
   const pool = INK.filter((c) => !want.some((w) => w.toLowerCase() === c.toLowerCase()));
-  const colors = want.map((w) => (w !== "auto" ? w : pool.splice(Math.floor(r() * pool.length), 1)[0]!));
+  const colors = want.map((w) => (w !== "random" ? w : pool.splice(Math.floor(r() * pool.length), 1)[0]!));
   const cols = [[s.merged, "MERGED PRs"], [s.repos, "REPOS"], [s[cfg.header.stat], THIRD[cfg.header.stat]]] as const;
   const cells = cols.map(([n, label], i) => {
     const x = 80 + i * 160;

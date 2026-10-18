@@ -26,15 +26,15 @@ on:
         type: string
         default: keep
       merged_color:
-        description: "MERGED PRs 숫자 색: auto(랜덤) 또는 #RRGGBB (keep=유지)"
+        description: "MERGED PRs 숫자 색: auto(기본색) / random(랜덤) / #RRGGBB (keep=유지)"
         type: string
         default: keep
       repos_color:
-        description: "REPOS 숫자 색: auto(랜덤) 또는 #RRGGBB (keep=유지)"
+        description: "REPOS 숫자 색: auto(기본색) / random(랜덤) / #RRGGBB (keep=유지)"
         type: string
         default: keep
       third_color:
-        description: "STARS 숫자 색: auto(랜덤) 또는 #RRGGBB (keep=유지)  |  ⚠ 설정을 고른 뒤 아래 Run workflow 버튼을 눌러야 적용됩니다!"
+        description: "STARS 숫자 색: auto(기본색) / random(랜덤) / #RRGGBB (keep=유지)  |  ⚠ 설정을 고른 뒤 아래 Run workflow 버튼을 눌러야 적용됩니다!"
         type: string
         default: keep
 permissions:

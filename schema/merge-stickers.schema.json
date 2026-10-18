@@ -259,7 +259,10 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "const": "auto"
+                  "enum": [
+                    "auto",
+                    "random"
+                  ]
                 },
                 {
                   "type": "string",
@@ -272,7 +275,10 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "const": "auto"
+                  "enum": [
+                    "auto",
+                    "random"
+                  ]
                 },
                 {
                   "type": "string",
@@ -285,7 +291,10 @@
               "anyOf": [
                 {
                   "type": "string",
-                  "const": "auto"
+                  "enum": [
+                    "auto",
+                    "random"
+                  ]
                 },
                 {
                   "type": "string",

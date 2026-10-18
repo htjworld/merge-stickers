@@ -3,7 +3,7 @@ import { z } from "zod";
 const shape = z.enum(["circle", "squircle", "rounded-square", "hexagon", "star-badge", "shield", "cloud", "scallop"]);
 export const TIERS = ["white", "color", "bronze", "silver", "gold", "platinum", "diamond"] as const;
 const tier = z.enum(TIERS);
-const hexOrAuto = z.union([z.literal("auto"), z.string().regex(/^#[0-9a-fA-F]{6}$/)]).default("auto");
+const hexOrAuto = z.union([z.enum(["auto", "random"]), z.string().regex(/^#[0-9a-fA-F]{6}$/)]).default("auto");
 const finish = z.enum(["glossy", "matte", "holo", "foil"]);
 
 export const configSchema = z.object({
@@ -47,7 +47,7 @@ export const configSchema = z.object({
   }).prefault({}),
   header: z.object({
     stat: z.enum(["stars", "since", "latest", "owners"]).default("stars"),
-    // 숫자 색: auto(시드 랜덤, 서로 다른 색) 또는 #RRGGBB
+    // 숫자 색: auto(기본 3색) | random(시드 랜덤, 서로 다른 색) | #RRGGBB
     colors: z.object({
       merged: hexOrAuto,
       repos: hexOrAuto,

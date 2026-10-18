@@ -22,13 +22,13 @@ inputs:
     description: unique(스티커마다 다른 색) 또는 #RRGGBB
     default: ""
   merged_color:
-    description: auto 또는 #RRGGBB (헤더 MERGED PRs 숫자 색)
+    description: auto(기본색) | random | #RRGGBB (헤더 MERGED PRs 숫자 색)
     default: ""
   repos_color:
-    description: auto 또는 #RRGGBB (헤더 REPOS 숫자 색)
+    description: auto(기본색) | random | #RRGGBB (헤더 REPOS 숫자 색)
     default: ""
   third_color:
-    description: auto 또는 #RRGGBB (헤더 세 번째 숫자 색)
+    description: auto(기본색) | random | #RRGGBB (헤더 세 번째 숫자 색)
     default: ""
 runs:
   using: composite
