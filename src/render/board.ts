@@ -4,7 +4,7 @@ import type { Item } from "../types.js";
 import { renderButton, renderHeader, renderSlot, stats } from "./header.js";
 import { renderSticker, prefixIds, CANVAS } from "./sticker.js";
 import { THEMES } from "./themes.js";
-import { EMPTY, onPanel, CAP, RAIL, renderPanel, SIDE } from "./panel.js";
+import { NONE, onPanel, CAP, RAIL, renderPanel, SIDE } from "./panel.js";
 import { LOGO, renderWordmark } from "./wordmark.js";
 
 export const HOME = "https://github.com/htjworld/merge-stickers";
@@ -66,8 +66,7 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string, buttons: { 
   // 판 조각은 0x0 그림으로, 판 색을 깐 그림은 원래 그림으로 바꿔 예전 배치로 돌아간다. GitHub 레이아웃이 바뀌면 이 숫자만 다시 잰다.
   const NARROW = `(max-width: ${F + 433.98}px)`, WIDE = `(min-width: ${F + 434}px)`;
   const src = (media: string, s: string) => `<source media="${media}" srcset="${s}">`;
-  const empty = framed ? v("panel/empty.svg", EMPTY) : "";
-  const gone = (media: string) => (framed ? src(media, empty) : "");
+  const gone = (media: string) => (framed ? src(media, NONE) : "");
   const pic = (l: string, d: string, attrs: string, first = "") => `<picture>${first}${src(DARK, d)}<img src="${l}"${attrs}></picture>`;
   const pair = (name: string, mk: (dark: boolean) => string, on = false) =>
     [v(`${name}-light.svg`, on ? onPanel(mk(false), false) : mk(false)), v(`${name}-dark.svg`, on ? onPanel(mk(true), true) : mk(true))] as const;

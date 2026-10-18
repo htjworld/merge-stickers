@@ -83,7 +83,7 @@ test("로고는 Merge 배지와 STICKERS 글자로 그려지고 merge-stickers �
   expect(on.files.get("panel/logo-light.svg")).toContain('width="140"'); // 로고 크기는 그대로, 판 안에 들어간다
   const off = build([item(1)], { header: { logo: false } });
   expect(off.files.has("logo-light.svg")).toBe(false);
-  expect(off.files.has("panel/empty.svg")).toBe(false); // 판도 로고와 함께 빠진다
+  expect([...off.files.keys()].some((k) => k.startsWith("panel/"))).toBe(false); // 판도 로고와 함께 빠진다
   expect(off.snippet).not.toContain("merge-stickers\"");
 });
 
@@ -100,6 +100,7 @@ test("스티커판: 넓은 화면에서 보이는 그림만 더하면 모든 줄
     expect(new Set(widths(r))).toEqual(new Set([f]));
     expect(r.snippet).toContain(`media="(max-width: ${f + 433.98}px)"`);
     expect(r.snippet).not.toMatch(/media="[^"]*\band\b[^"]*"/);
+    expect(r.snippet).toContain('srcset="https://raw.githubusercontent.com/htjworld/merge-stickers/main/assets/none.png 1000x"'); // 숨김은 1x1 PNG를 1000배 밀도로
   }
-  expect(build([item(1)], { layout: { columns: 20 } }).files.has("panel/empty.svg")).toBe(false); // README보다 넓으면 판을 안 그린다
+  expect([...build([item(1)], { layout: { columns: 20 } }).files.keys()].some((k) => k.startsWith("panel/"))).toBe(false); // README보다 넓으면 판을 안 그린다
 });

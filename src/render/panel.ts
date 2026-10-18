@@ -27,5 +27,7 @@ export const renderPanel = (w: number, h: number, x: number, y: number, pw: numb
 export const onPanel = (svg: string, dark: boolean) =>
   svg.replace(/^<svg[^>]*>/, (m) => `${m}<rect x="-1e4" y="-1e4" width="2e4" height="2e4" fill="${PANEL[dark ? 1 : 0]}"/>`);
 
-/** 화면폭에 따라 그림을 지울 때 넣는 0x0 그림. */
-export const EMPTY = `<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0"/>`;
+/** 화면폭에 따라 그림을 지울 때 넣는 srcset: 1x1 투명 PNG를 1000배 밀도로 줄여 0x0으로 만든다.
+ *  Safari(WebKit)는 크기 0인 SVG를 깨진 그림으로 보고(300x150 칸, 대체 텍스트 박스), 밀도를 붙인 SVG는 본문 폭으로 키워서 PNG를 쓴다.
+ *  GitHub이 data: 주소는 지우고 상대경로 srcset은 다시 쓰므로, 이 저장소의 파일을 절대주소로 가리킨다. */
+export const NONE = "https://raw.githubusercontent.com/htjworld/merge-stickers/main/assets/none.png 1000x";
