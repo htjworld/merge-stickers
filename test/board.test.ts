@@ -80,9 +80,26 @@ test("로고는 Merge 배지와 STICKERS 글자로 그려지고 merge-stickers �
   expect(on.snippet).toContain('<a href="https://github.com/htjworld/merge-stickers"');
   expect(on.files.get("logo-light.svg")).toContain('fill="#8250df"');
   expect(on.files.get("logo-light.svg")).toContain(">STICKERS</text>");
-  expect(on.snippet).toContain('width="140" alt="MERGE STICKERS"'); // 로고 크기는 그대로
-  expect(on.snippet.match(/divider-(left|right)-light\.svg/g)).toHaveLength(2); // 양옆 구분선은 별도 이미지
+  expect(on.files.get("panel/logo-light.svg")).toContain('width="140"'); // 로고 크기는 그대로, 판 안에 들어간다
   const off = build([item(1)], { header: { logo: false } });
   expect(off.files.has("logo-light.svg")).toBe(false);
+  expect(off.files.has("panel/empty.svg")).toBe(false); // 판도 로고와 함께 빠진다
   expect(off.snippet).not.toContain("merge-stickers\"");
+});
+
+test("스티커판: 넓은 화면에서 보이는 그림만 더하면 모든 줄이 판 폭이고, 테마 조건은 화면폭 조건과 묶지 않는다", () => {
+  const links = { settings: "s", fetch: "f" };
+  // 판 위 그림(panel/)만 넓은 화면에 보인다. 크기는 img width, 없으면 SVG 자체 width
+  const widths = (r: ReturnType<typeof build>) => r.snippet.split("<br>").slice(1).map((line) =>
+    [...line.matchAll(/<img src="[^"]*?\/(panel\/[^"?]+)[^"]*"([^>]*)>/g)].reduce((n, [, f, rest]) =>
+      n + Number((rest!.match(/width="([\d.]+)"/) ?? r.files.get(f!)!.match(/width="([\d.]+)"/))![1]), 0));
+  for (const [c, b] of [[{}, null], [{}, links], [{ layout: { columns: 4, slots: "none" } }, links]] as const) {
+    const cfg = configSchema.parse(c);
+    const r = buildBoard(toTiles([1, 2, 3, 4, 5].map((n) => item(n)), cfg, "me", () => null), cfg, "me", b);
+    const f = Math.max(cfg.layout.columns * 72, b ? 568 : 480) + 64;
+    expect(new Set(widths(r))).toEqual(new Set([f]));
+    expect(r.snippet).toContain(`media="(max-width: ${f + 433.98}px)"`);
+    expect(r.snippet).not.toMatch(/media="[^"]*\band\b[^"]*"/);
+  }
+  expect(build([item(1)], { layout: { columns: 20 } }).files.has("panel/empty.svg")).toBe(false); // README보다 넓으면 판을 안 그린다
 });
