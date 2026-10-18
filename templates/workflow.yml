@@ -1,10 +1,10 @@
 name: merge-stickers
 on:
   schedule:
-    - cron: "0 18 * * *" # UTC 18시 = KST 새벽 3시
+    - cron: "0 18 * * 0" # 매주 일요일 UTC 18시 = 월요일 KST 새벽 3시
   workflow_dispatch:
     # README의 fetch 버튼 > Run workflow 를 누르면 뜨는 이 폼이 설정창입니다.
-    # 값을 고르면 config.yml에 저장되어 이후 매일 자동 실행에도 유지됩니다. keep은 "바꾸지 않음".
+    # 값을 고르면 config.yml에 저장되어 이후 매주 자동 실행에도 유지됩니다. keep은 "바꾸지 않음".
     inputs:
       visibility:
         description: "보기: public(공개만) / private(비공개만, repo 스코프 PAT 필요) / all(전부)"

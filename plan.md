@@ -71,7 +71,7 @@ GitHub 마크다운 CSS(`github-markdown-css`) 기준으로 확인한 내용입�
 
 "머지되면 즉시 훅"은 불가능합니다. 다른 사람 레포에서 일어난 머지는 내 레포의 워크플로우를 깨우지 않기 때문입니다.
 그래서 `schedule`(하루 1회) + `workflow_dispatch`(수동)로 갱신합니다.
-cron 예시: `0 18 * * *` (UTC 18시 = KST 새벽 3시)
+cron 예시: `0 18 * * 0` (매주 일요일 UTC 18시 = 월요일 KST 새벽 3시)
 
 ---
 
@@ -90,7 +90,7 @@ cron 예시: `0 18 * * *` (UTC 18시 = KST 새벽 3시)
 ### 3.2 변주 규칙 (시드 기반, 결정적)
 
 `hash(seed + pr.id)`를 mulberry32 같은 가벼운 PRNG에 넣어 모든 값을 결정합니다.
-같은 입력이면 항상 같은 결과가 나오므로, 매일 돌려도 데이터가 안 바뀌면 git diff가 생기지 않습니다.
+같은 입력이면 항상 같은 결과가 나오므로, 매주 돌려도 데이터가 안 바뀌면 git diff가 생기지 않습니다.
 
 | 항목 | 범위 |
 |---|---|
@@ -562,7 +562,7 @@ stickers: {}
 name: merge-stickers
 on:
   schedule:
-    - cron: "0 18 * * *"
+    - cron: "0 18 * * 0"
   workflow_dispatch:
 permissions:
   contents: write
