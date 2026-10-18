@@ -81,24 +81,8 @@ test("로고는 Merge 배지와 STICKERS 글자로 그려지고 merge-stickers �
   expect(on.files.get("logo-light.svg")).toContain('fill="#8250df"');
   expect(on.files.get("logo-light.svg")).toContain(">STICKERS</text>");
   expect(on.snippet).toContain('width="140" alt="MERGE STICKERS"'); // 로고 크기는 그대로
-  expect(on.files.has("frame/tl-310x88-light.svg")).toBe(true); // 로고가 윗변에 걸리는 스티커판
+  expect(on.snippet.match(/divider-(left|right)-light\.svg/g)).toHaveLength(2); // 양옆 구분선은 별도 이미지
   const off = build([item(1)], { header: { logo: false } });
   expect(off.files.has("logo-light.svg")).toBe(false);
-  expect(off.files.has("frame/empty.svg")).toBe(false); // 판도 로고와 함께 빠진다
   expect(off.snippet).not.toContain("merge-stickers\"");
-});
-
-test("스티커판: 모든 줄이 판 폭(스티커 한 줄 + 옆 조각 둘)으로 같아야 옆변이 이어지고, 좁은 화면에선 조각이 사라진다", () => {
-  const links = { settings: "s", fetch: "f" };
-  const widths = (snippet: string) => snippet.split("<br>").slice(1).map((line) =>
-    [...line.matchAll(/<img src="[^"]*frame\/\w+-(\d+)x|width="(\d+)"/g)].reduce((n, m) => n + Number(m[1] ?? m[2]), 0) +
-    (line.includes("merged PRs across") ? 480 : 0) + (line.match(/align="top" alt="(settings|fetch)"/g)?.length ?? 0) * 44);
-  for (const [c, b] of [[{}, null], [{}, links], [{ layout: { columns: 4, slots: "none" } }, links]] as const) {
-    const cfg = configSchema.parse(c);
-    const r = buildBoard(toTiles([1, 2, 3, 4, 5].map((n) => item(n)), cfg, "me", () => null), cfg, "me", b);
-    const f = Math.max(cfg.layout.columns * 72, b ? 568 : 480) + 40;
-    expect(new Set(widths(r.snippet))).toEqual(new Set([f]));
-    expect(r.snippet).toContain(`media="(max-width: ${f + 433.98}px)"`);
-  }
-  expect(build([item(1)], { layout: { columns: 20 } }).files.has("frame/empty.svg")).toBe(false); // README보다 넓으면 판을 안 그린다
 });

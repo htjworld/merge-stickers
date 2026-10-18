@@ -16,5 +16,16 @@ export function renderWordmark(dark: boolean): string {
     `<text x="0" y="53" font-size="18" textLength="${W}" fill="${INK[k]}">STICKERS</text></svg>`;
 }
 
+export const LOGO = 140, DIVIDER_H = 112; // README의 로고 표시 폭, 구분선 이미지 높이 (로고 88보다 24 높은 만큼이 위 여백)
 
-export const LOGO = 140; // README의 로고 표시 폭
+/** 로고 양옆 구분선 (---- 로고 ----). 바깥쪽으로 갈수록 흐려지고, 높이는 Merge 배지와 STICKERS 사이 틈에 맞춘다.
+ *  README에서 width="25%" height="112"로 쓴다. GitHub이 height:auto; max-height:112px를 붙이므로
+ *  아주 홀쭉한 비율로 높이를 112에 고정하고, preserveAspectRatio="none"으로 가로만 늘린다. */
+export function renderDivider(dark: boolean, side: "left" | "right"): string {
+  const k = dark ? 1 : 0, s = LOGO / (W + 4);
+  const y = Math.round((DIVIDER_H - 57 * s + 38 * s) * 10) / 10; // 바닥을 로고와 맞추고, 배지 아래(32)와 STICKERS 위(≈40) 사이 36 (viewBox가 -2부터라 38)
+  const [from, to, x] = side === "left" ? [0, 0.35, 0] : [0.35, 0, 0.6];
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 ${DIVIDER_H}" preserveAspectRatio="none">` +
+    `<linearGradient id="g"><stop offset="0" stop-color="${INK[k]}" stop-opacity="${from}"/><stop offset="1" stop-color="${INK[k]}" stop-opacity="${to}"/></linearGradient>` +
+    `<rect x="${x}" y="${y - 0.75}" width="9.4" height="1.5" fill="url(#g)"/></svg>`;
+}
