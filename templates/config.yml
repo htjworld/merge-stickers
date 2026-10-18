@@ -29,7 +29,7 @@ layout:
 
 header:
   stat: stars                # 세 번째 통계: stars(기여한 레포 스타 합) | since | latest | owners
-  colors:                    # 헤더 숫자 색: auto(기본 3색 #4FA5DE #1EE1A0 #EB2D7D) | random(랜덤) | "#RRGGBB"
+  colors:                    # 헤더 숫자 색: auto(기본 3색 #72C9F7 #1EE1A0 #EB2D7D) | random(랜덤) | "#RRGGBB"
     merged: auto
     repos: auto
     third: auto

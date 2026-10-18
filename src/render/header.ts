@@ -9,7 +9,7 @@ const FONT = "-apple-system,'Segoe UI',Helvetica,Arial,sans-serif";
 /** 숫자 색은 시드로 고른다 (같은 사용자면 항상 같은 색, 라이트/다크 동일). 흰 배경에서도 읽히는 진한 톤. */
 const INK = ["#FF5C5C", "#FF8A1F", "#E6A700", "#14B87A", "#12A8C9", "#3D8BFF", "#9B5CF6", "#F25CA8"];
 /** auto일 때의 기본 색. MERGED PRs, REPOS, 세 번째 순서로 HTJ 로고의 시안을 하늘색 쪽으로 옮긴 색, 민트, 핑크. */
-const DEFAULT = ["#4FA5DE", "#1EE1A0", "#EB2D7D"];
+const DEFAULT = ["#72C9F7", "#1EE1A0", "#EB2D7D"];
 
 const compact = (n: number) =>
   n >= 1e6 ? `${+(n / 1e6).toFixed(1)}M` : n >= 1e3 ? `${+(n / 1e3).toFixed(n < 1e4 ? 1 : 0)}K` : String(n);
