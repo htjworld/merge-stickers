@@ -1,13 +1,17 @@
-import { LOGO } from "./logo.js";
+import { GIT_MERGE } from "./icons.js";
 
-// MERGE는 GitHub의 머지 보라색. STICKERS는 HTJ 로고의 파랑, 초록, 빨강 계열에서 뽑아 이웃 글자끼리 겹치지 않게 번갈아 놓았다.
-const MERGE: [light: string, dark: string] = ["#8250DF", "#A371F7"];
-const STICKERS = ["#14C1F1", "#FF4D5E", "#1EE1A0", "#3A7BFF", "#EB2D7D", "#5FD94A", "#12B5D6", "#FF6B6B"];
-const PAD = 4;
+// GitHub PR 화면의 Merged 배지(14px/600, 패딩 8·12px, done-emphasis)와 머지 박스 제목(600, fgColor-default)을 그대로 옮겼다.
+const FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans',Helvetica,Arial,sans-serif"; // GitHub 본문 폰트 스택
+const BADGE: [light: string, dark: string] = ["#8250df", "#8957e5"];
+const INK: [light: string, dark: string] = ["#1f2328", "#f0f6fc"];
+const W = 87; // 배지 폭. 글꼴마다 폭이 달라서 textLength로 두 줄을 이 폭에 맞춘다 (SF Pro 기준이면 거의 그대로).
 
-/** 로고: 글자를 path로 그려서 폰트가 없는 GitHub에서도 똑같이 보인다. */
+/** 로고: 위에 Merge 배지, 아래에 STICKERS 제목. 글꼴은 GitHub처럼 보는 사람의 시스템 폰트. */
 export function renderWordmark(dark: boolean): string {
-  let i = 0;
-  const paths = LOGO.letters.map((l) => `<path fill="${l.line === 0 ? MERGE[dark ? 1 : 0] : STICKERS[i++ % STICKERS.length]}" d="${l.d}"/>`).join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-PAD} ${-PAD} ${LOGO.w + PAD * 2} ${LOGO.h + PAD * 2}" role="img" aria-label="MERGE STICKERS">${paths}</svg>`;
+  const k = dark ? 1 : 0;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 ${W + 4} 57" role="img" aria-label="MERGE STICKERS" font-family="${FONT}" font-weight="600">` +
+    `<rect width="${W}" height="32" rx="16" fill="${BADGE[k]}"/>` +
+    `<path transform="translate(12 8)" fill="#fff" d="${GIT_MERGE}"/>` +
+    `<text x="32" y="21" font-size="14" textLength="43" fill="#fff">Merge</text>` +
+    `<text x="0" y="53" font-size="18" textLength="${W}" fill="${INK[k]}">STICKERS</text></svg>`;
 }

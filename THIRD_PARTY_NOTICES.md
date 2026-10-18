@@ -1,6 +1,6 @@
 # Third-party notices
 
-## Octicons (`gear`, `sync` icons, used for the header buttons)
+## Octicons (`gear`, `sync` icons for the header buttons, `git-merge` icon for the logo)
 
 Source: https://github.com/primer/octicons (@primer/octicons)
 
@@ -27,8 +27,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
-## Rubik Bubbles (로고 글자 윤곽)
-
-로고(`src/render/logo.ts`)의 글자 윤곽은 Rubik Bubbles(Copyright 2020 The Rubik Filtered Project Authors, https://github.com/NaN-xyz/Rubik-Filtered)에서 뽑은 path입니다.
-SIL Open Font License 1.1 (https://openfontlicense.org)에 따라 사용합니다.
