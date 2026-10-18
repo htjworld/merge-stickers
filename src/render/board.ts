@@ -62,8 +62,9 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string, buttons: { 
     return `<a href="${attr(href)}" title="${kind === "settings" ? "settings (owner only)" : "fetch now (owner only)"}"><picture><source media="(prefers-color-scheme: dark)" srcset="${d}"><img src="${l}" align="${side}" width="44" height="84" alt="${kind}"></picture></a>`;
   };
   const side = cfg.header.buttons && buttons ? btn("settings", buttons.settings, "left") + btn("fetch", buttons.fetch, "right") : "";
+  const rw = cfg.layout.columns * w; // 로고 양옆 구분선은 스티커 한 줄 폭까지
   const logo = cfg.header.logo
-    ? `<p align="center"><a href="${HOME}" title="merge-stickers"><picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(true))}"><img src="${v("logo-light.svg", renderWordmark(false))}" width="140" alt="MERGE STICKERS"></picture></a></p>
+    ? `<p align="center"><a href="${HOME}" title="merge-stickers"><picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(true, rw))}"><img src="${v("logo-light.svg", renderWordmark(false, rw))}" width="${rw}" alt="MERGE STICKERS"></picture></a></p>
 `
     : "";
   const header = `${logo}<p align="center">${side}<picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
