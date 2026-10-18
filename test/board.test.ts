@@ -80,8 +80,8 @@ test("로고는 Merge 배지와 STICKERS 글자로 그려지고 merge-stickers �
   expect(on.snippet).toContain('<a href="https://github.com/htjworld/merge-stickers"');
   expect(on.files.get("logo-light.svg")).toContain('fill="#8250df"');
   expect(on.files.get("logo-light.svg")).toContain(">STICKERS</text>");
-  expect(on.files.get("logo-light.svg")!.match(/<line /g)).toHaveLength(2); // 위 요소와 나누는 양옆 구분선
-  expect(on.snippet).toContain('width="720" alt="MERGE STICKERS"'); // 스티커 한 줄 폭 (10 x 72)
+  expect(on.snippet).toContain('width="140" alt="MERGE STICKERS"'); // 로고 크기는 그대로
+  expect(on.snippet.match(/divider-(left|right)-light\.svg/g)).toHaveLength(2); // 양옆 구분선은 별도 이미지
   const off = build([item(1)], { header: { logo: false } });
   expect(off.files.has("logo-light.svg")).toBe(false);
   expect(off.snippet).not.toContain("merge-stickers\"");

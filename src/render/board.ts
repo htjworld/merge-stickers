@@ -4,7 +4,7 @@ import type { Item } from "../types.js";
 import { renderButton, renderHeader, renderSlot, stats } from "./header.js";
 import { renderSticker, prefixIds, CANVAS } from "./sticker.js";
 import { THEMES } from "./themes.js";
-import { renderWordmark } from "./wordmark.js";
+import { DIVIDER_H, LOGO, renderDivider, renderWordmark } from "./wordmark.js";
 
 export const HOME = "https://github.com/htjworld/merge-stickers";
 
@@ -62,9 +62,11 @@ export function buildBoard(tiles: Tile[], cfg: Config, seed: string, buttons: { 
     return `<a href="${attr(href)}" title="${kind === "settings" ? "settings (owner only)" : "fetch now (owner only)"}"><picture><source media="(prefers-color-scheme: dark)" srcset="${d}"><img src="${l}" align="${side}" width="44" height="84" alt="${kind}"></picture></a>`;
   };
   const side = cfg.header.buttons && buttons ? btn("settings", buttons.settings, "left") + btn("fetch", buttons.fetch, "right") : "";
-  const rw = cfg.layout.columns * w; // 로고 양옆 구분선은 스티커 한 줄 폭까지
+  // 로고 양옆 구분선은 별도 이미지라 로고 크기는 그대로다. 특별 README 맨 아래에 붙어도 위 요소들과 섹션이 나뉜다.
+  const line = (side: "left" | "right") =>
+    `<picture><source media="(prefers-color-scheme: dark)" srcset="${v(`divider-${side}-dark.svg`, renderDivider(true, side))}"><img src="${v(`divider-${side}-light.svg`, renderDivider(false, side))}" width="25%" height="${DIVIDER_H}" alt=""></picture>`;
   const logo = cfg.header.logo
-    ? `<p align="center"><a href="${HOME}" title="merge-stickers"><picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(true, rw))}"><img src="${v("logo-light.svg", renderWordmark(false, rw))}" width="${rw}" alt="MERGE STICKERS"></picture></a></p>
+    ? `<p align="center"><a href="${HOME}" title="merge-stickers">${line("left")}<picture><source media="(prefers-color-scheme: dark)" srcset="${v("logo-dark.svg", renderWordmark(true))}"><img src="${v("logo-light.svg", renderWordmark(false))}" width="${LOGO}" alt="MERGE STICKERS"></picture>${line("right")}</a></p>
 `
     : "";
   const header = `${logo}<p align="center">${side}<picture><source media="(prefers-color-scheme: dark)" srcset="${hd}"><img src="${hl}" alt="${st.merged} merged PRs across ${st.repos} repos"></picture></p>`;
