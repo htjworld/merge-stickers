@@ -1,0 +1,12 @@
+# yaml-language-server: $schema=../schema/merge-stickers.schema.json
+# The live demo at the top of this repo's README: the author's own board, rendered by this repo's code.
+# Regenerate: npm run build && node dist/cli.js fetch && node dist/cli.js render
+user: htjworld
+timezone: Asia/Seoul
+header:
+  # Visitors can't open the author's settings, so the buttons point at the README sections instead
+  settingsUrl: https://github.com/htjworld/merge-stickers#settings
+  fetchUrl: https://github.com/htjworld/merge-stickers#install
+output:
+  dir: assets/demo
+  readme: README.md
