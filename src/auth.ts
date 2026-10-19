@@ -8,7 +8,7 @@ export function findToken(): string {
     const t = execFileSync("gh", ["auth", "token"], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim();
     if (t) return t;
   } catch {}
-  throw new Error("GitHub 토큰을 찾지 못했습니다. GH_TOKEN을 설정하거나 `gh auth login`을 실행하세요.");
+  throw new Error("No GitHub token found. Set GH_TOKEN or run `gh auth login`.");
 }
 
 /** 사용자 감지: config.user → Actions의 repository_owner → 토큰 소유자 */

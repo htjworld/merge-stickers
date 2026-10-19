@@ -10,7 +10,7 @@ export function loadConfig(path = CONFIG_PATH): Config {
   const r = configSchema.safeParse(raw);
   if (!r.success) {
     const msg = r.error.issues.map((i) => `  ${i.path.join(".") || "(root)"}: ${i.message}`).join("\n");
-    throw new Error(`${path} 설정 오류:\n${msg}`);
+    throw new Error(`invalid config in ${path}:\n${msg}`);
   }
   return r.data;
 }

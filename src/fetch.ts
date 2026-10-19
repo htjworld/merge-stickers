@@ -22,14 +22,14 @@ export async function runFetch(cfg: Config): Promise<string> {
   const { items: shown, excluded } = filterItems(items, cfg, user);
   const imgs = await downloadAll(shown.map((i) => imageSource(i, cfg)));
   const lines = [
-    `${user}: 머지 ${raw.length}건 수집, 보관 ${items.length}건 (사라진 항목 ${items.filter((i) => i.gone).length}건 보존)`,
-    `표시 ${shown.length}건, 레포 ${new Set(shown.map((i) => i.repo).filter(Boolean)).size}개`,
-    ...Object.entries(excluded).map(([k, n]) => `  제외 ${k}: ${n}건`),
-    `이미지: 새로 ${imgs.new}, 캐시 ${imgs.hit}, 실패 ${imgs.fail}`,
-    changed ? "merges.json 갱신됨" : "변경 없음",
+    `${user}: merges collected ${raw.length}, stored ${items.length} (kept after disappearing: ${items.filter((i) => i.gone).length})`,
+    `shown ${shown.length}, repos ${new Set(shown.map((i) => i.repo).filter(Boolean)).size}`,
+    ...Object.entries(excluded).map(([k, n]) => `  excluded by ${k}: ${n}`),
+    `images: new ${imgs.new}, cached ${imgs.hit}, failed ${imgs.fail}`,
+    changed ? "merges.json updated" : "no changes",
   ];
   const privCount = raw.filter((i) => i.isPrivate).length;
-  if (cfg.visibility === "public" && privCount) lines.push(`  private ${privCount}건은 visibility: public이라 빠짐`);
-  if (cfg.visibility === "private") lines.push(`  public ${raw.length - privCount}건은 visibility: private이라 빠짐`);
+  if (cfg.visibility === "public" && privCount) lines.push(`  left out by visibility: public: ${privCount} private`);
+  if (cfg.visibility === "private") lines.push(`  left out by visibility: private: ${raw.length - privCount} public`);
   return lines.join("\n");
 }

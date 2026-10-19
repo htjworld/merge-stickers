@@ -17,7 +17,7 @@ const commands: Record<string, () => Promise<string>> = {
 const cmd = process.argv[2] ?? "";
 const run = commands[cmd];
 if (!run) {
-  console.error(`사용법: merge-stickers <${Object.keys(commands).join("|")}>`);
+  console.error(`usage: merge-stickers <${Object.keys(commands).join("|")}>`);
   process.exit(1);
 }
 run().then(console.log, (e: Error) => {

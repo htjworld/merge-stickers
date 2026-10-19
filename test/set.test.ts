@@ -28,8 +28,8 @@ test("set: 값을 바꾸되 주석은 보존, keep/빈 값은 무시, #색상은
 
 test("set: 잘못된 값은 거부하고 파일을 바꾸지 않는다", () => {
   const p = file();
-  expect(() => runSet(["visibility=nope"], p)).toThrow(/설정 오류/);
-  expect(() => runSet(["header.colors.repos=red"], p)).toThrow(/설정 오류/);
+  expect(() => runSet(["visibility=nope"], p)).toThrow(/invalid config/);
+  expect(() => runSet(["header.colors.repos=red"], p)).toThrow(/invalid config/);
   expect(readFileSync(p, "utf8")).toBe("# 내 주석\nvisibility: public # 인라인\n");
 });
 

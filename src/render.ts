@@ -13,7 +13,7 @@ import { buttonLinks } from "./repo.js";
 /** merges.json + config + 이미지 캐시만으로 다시 그린다. 네트워크 없음 (plan 7). */
 export async function runRender(cfg: Config): Promise<string> {
   const merges = readMerges();
-  if (!merges) throw new Error("merges.json이 없습니다. 먼저 `merge-stickers fetch`를 실행하세요.");
+  if (!merges) throw new Error("merges.json not found. Run `merge-stickers fetch` first.");
   const user = cfg.user ?? merges.user;
 
   const { items } = filterItems(applyPrivate(merges.items, cfg), cfg, user);
@@ -31,7 +31,7 @@ export async function runRender(cfg: Config): Promise<string> {
     writeFileSync(p, svg);
   }
   const readme = cfg.output.readme;
-  if (!existsSync(readme)) throw new Error(`${readme}이 없습니다.`);
+  if (!existsSync(readme)) throw new Error(`${readme} not found.`);
   const changed = injectReadme(readme, snippet);
-  return `스티커 ${shown.length}장, 파일 ${files.size}개 생성, ${readme} ${changed ? "갱신됨" : "변경 없음"}`;
+  return `stickers ${shown.length}, files written ${files.size}, ${readme} ${changed ? "updated" : "unchanged"}`;
 }

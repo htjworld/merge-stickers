@@ -1,23 +1,23 @@
 # merge-stickers
 
-이 레포의 README에는 머지된 PR이 스티커판으로 자동 생성되어 있습니다.
+This repo's README has a sticker board of merged PRs, generated automatically.
 
-## 수정 규칙
+## Editing rules
 
-- 고칠 수 있는 파일은 `.merge-stickers/config.yml` 하나뿐입니다.
-- `assets/merge-stickers/` 아래와 README의 `<!--MERGE-STICKERS:START-->` ~ `<!--MERGE-STICKERS:END-->` 사이는 생성물이라 직접 고치지 않습니다.
-- `.merge-stickers/merges.json`은 수집된 데이터입니다. 직접 고치지 않습니다.
+- `.merge-stickers/config.yml` is the only file you may edit.
+- Everything under `assets/merge-stickers/`, and the README between `<!--MERGE-STICKERS:START-->` and `<!--MERGE-STICKERS:END-->`, is generated. Don't edit it by hand.
+- `.merge-stickers/merges.json` is collected data. Don't edit it by hand.
 
-## 수정 후 할 일
+## After editing
 
-1. `npx merge-stickers render` (네트워크 없이 다시 그립니다)
-2. `git diff --stat`으로 변경 범위를 확인합니다.
-3. `npx merge-stickers check`로 private 이름 누출, 용량 초과, 안 맞는 config 키를 검사합니다.
+1. `npx github:htjworld/merge-stickers render` (redraws without network)
+2. Check the scope of changes with `git diff --stat`.
+3. `npx github:htjworld/merge-stickers check` looks for private name leaks, oversized files and config keys that match nothing.
 
-## 자주 하는 요청
+## Common requests
 
-- 특정 레포 빼기: `exclude.repos`에 이름이나 glob (`"my-company/*"`)
-- PR 하나 빼기: `exclude.prs`에 `"owner/repo#123"`
-- 스티커 꾸미기: `stickers."owner/repo"`(레포 전체) 또는 `"owner/repo#123"`(PR 하나)에 `shape`, `finish`, `rotate`, `image`, `tier`
-- 단계(흰색 > 컬러 > 동 > 은 > 금 > 플래티넘 > 다이아): 레포의 PR 개수로 자동 결정. 전부 고정하려면 `sticker.tier`, 기준 개수는 `sticker.thresholds`
-- 데이터를 새로 받아야 하는 변경(`visibility`, `private.display`)은 `npx merge-stickers fetch` 후 `render`
+- Drop a repo: add its name or a glob (`"my-company/*"`) to `exclude.repos`
+- Drop one PR: add `"owner/repo#123"` to `exclude.prs`
+- Style a sticker: set `shape`, `finish`, `rotate`, `image` or `tier` under `stickers."owner/repo"` (the whole repo) or `"owner/repo#123"` (one PR)
+- Tiers (white > color > bronze > silver > gold > platinum > diamond) come from how many PRs you have in that repo. Pin every sticker with `sticker.tier`; change the counts with `sticker.thresholds`
+- Changes that need fresh data (`visibility`, `private.display`): run `npx github:htjworld/merge-stickers fetch`, then `render`

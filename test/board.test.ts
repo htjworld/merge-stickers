@@ -55,7 +55,7 @@ test("README는 마커 사이만 바뀌고, 같은 내용이면 변경 없음", 
   expect(readFileSync(p, "utf8")).toBe(`head\n${START}\nnew\n${END}\ntail\n`);
   expect(injectReadme(p, "new")).toBe(false);
   writeFileSync(p, "no markers");
-  expect(() => injectReadme(p, "x")).toThrow(/마커/);
+  expect(() => injectReadme(p, "x")).toThrow(/markers/);
 });
 
 test("헤더 양옆 버튼: 왼쪽 설정, 오른쪽 fetch, 끄거나 레포를 모르면 없음", () => {

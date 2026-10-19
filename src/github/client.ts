@@ -71,7 +71,7 @@ export async function fetchMerged(token: string, login: string): Promise<Item[]>
   for (;;) {
     const d: { user: { pullRequests: { pageInfo: { hasNextPage: boolean; endCursor: string }; nodes: Node[] } } | null } =
       await gql(token, QUERY, { login, cursor });
-    if (!d.user) throw new Error(`GitHub 사용자를 찾을 수 없음: ${login}`);
+    if (!d.user) throw new Error(`GitHub user not found: ${login}`);
     const { pageInfo, nodes } = d.user.pullRequests;
     items.push(...nodes.map(toItem));
     if (!pageInfo.hasNextPage) return items;

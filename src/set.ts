@@ -14,7 +14,7 @@ export function runSet(pairs: string[], path = CONFIG_PATH): string {
   const changed: string[] = [];
   for (const p of pairs) {
     const i = p.indexOf("=");
-    if (i < 1) throw new Error(`key=value 형식이어야 합니다: ${p}`);
+    if (i < 1) throw new Error(`expected key=value: ${p}`);
     const key = p.slice(0, i).trim();
     const val = p.slice(i + 1).trim();
     if (val === "" || val === "keep") continue;
@@ -24,11 +24,11 @@ export function runSet(pairs: string[], path = CONFIG_PATH): string {
   }
   const r = configSchema.safeParse(doc.toJS() ?? {});
   if (!r.success) {
-    throw new Error("설정 오류:\n" + r.error.issues.map((e) => `  ${e.path.join(".")}: ${e.message}`).join("\n"));
+    throw new Error("invalid config:\n" + r.error.issues.map((e) => `  ${e.path.join(".")}: ${e.message}`).join("\n"));
   }
   if (changed.length) {
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, doc.toString());
   }
-  return changed.length ? `설정 변경: ${changed.join(", ")}` : "설정 변경 없음";
+  return changed.length ? `config changed: ${changed.join(", ")}` : "config unchanged";
 }
