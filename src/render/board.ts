@@ -34,7 +34,8 @@ export function toTiles(items: Item[], cfg: Config, user: string, images: (i: It
     tiles = sorted.map((i) => {
       const nth = (seen.get(i.repo || i.id) ?? 0) + 1;
       seen.set(i.repo || i.id, nth);
-      return mk(i, 1, nth, i.url, i.repo ? `${i.repo} #${i.key.split("#")[1]}` : "private");
+      const day = new Date(i.mergedAt).toLocaleDateString("en-CA", { timeZone: cfg.timezone });
+      return mk(i, 1, nth, i.url, i.repo ? [`${i.repo} #${i.key.split("#")[1]}`, i.title, `merged ${day}`].filter(Boolean).join(" · ") : "private");
     });
   }
   return cfg.layout.order === "desc" ? tiles.reverse() : tiles;

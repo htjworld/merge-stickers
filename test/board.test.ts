@@ -29,6 +29,7 @@ test("같은 입력이면 같은 출력, 클릭 링크는 PR로, 슬롯은 10의
   expect(a.snippet).toContain("slots/10-light.svg");
   expect(a.snippet).not.toContain("slots/11-");
   expect(a.snippet).not.toMatch(/<\/a>\s+<a|<\/picture>\s+<picture/); // 태그 사이 공백 금지
+  expect(a.snippet).toContain('title="acme/open #2 · title 2 · merged 2024-01-02"'); // 툴팁: 레포 #번호 · 제목 · 머지 날짜
 });
 
 test("groupBy: repo는 레포당 1장 + 카운트 뱃지, 링크는 검색 결과", () => {

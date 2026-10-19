@@ -103,7 +103,7 @@ I build small open-source tools for developers, like Merge Stickers, which turns
 - [ ] 새 머지가 생기면 README 맨 위 데모판 수동 갱신 (마켓플레이스 규칙상 이 레포엔 워크플로를 못 둬서 자동 갱신 안 됨)
   - `npm run build && node dist/cli.js fetch && node dist/cli.js render` → `README.md`, `assets/demo/` 커밋
   - 설정은 `.merge-stickers/config.yml` (출력 `assets/demo`, 버튼은 README의 Settings / Install로 연결)
-- [ ] 스티커 툴팁에 PR 제목과 머지 날짜 추가
+- [x] 스티커 툴팁에 PR 제목과 머지 날짜 추가 (10-19, PR 모드만. repo 묶음 모드는 그대로)
   - 지금: `python/cpython #149246`
   - 바꾸면: `python/cpython #149246 · <PR 제목> · merged 2026-09-12`
   - 위치: `src/render/board.ts`의 `toTiles`가 만드는 `alt`(= `title`). private은 지금처럼 이름 없이 둘 것

@@ -1,6 +1,6 @@
 {
   "name": "merge-stickers",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Turn every open-source PR you got merged into a collectible sticker on your GitHub profile README.",
   "type": "module",
   "bin": {
