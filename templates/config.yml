@@ -1,51 +1,51 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/htjworld/merge-stickers/main/schema/merge-stickers.schema.json
-# ⚠ 이 파일을 저장한 뒤에는 README의 fetch 버튼(Actions > Run workflow)을 눌러야 적용됩니다!
-#    (Run workflow 창의 입력으로도 같은 설정을 바꿀 수 있습니다)
-# merge-stickers 설정. 사람(또는 Claude Code)이 고치는 파일은 이것 하나뿐입니다.
-# 고친 뒤: npx merge-stickers render  (네트워크 없이 다시 그림)
-# user를 생략하면 자동 감지합니다 (Actions: 레포 오너, 로컬: 토큰 소유자).
+# ⚠ After saving this file, press the fetch button in your README (Actions > Run workflow) to apply it!
+#    (The Run workflow form can change the same settings too.)
+# merge-stickers settings. This is the only file a human (or Claude Code) edits.
+# Local preview after editing: npx github:htjworld/merge-stickers render  (redraws without network)
+# Leave user out to auto-detect it (Actions: repo owner, local: token owner).
 # user: your-login
-timezone: Asia/Seoul
+timezone: UTC                # e.g. Asia/Seoul, America/New_York
 
-visibility: __VISIBILITY__   # public(공개만) | private(비공개만) | all(전부). private/all은 repo 스코프 PAT 필요
+visibility: __VISIBILITY__   # public (public only) | private (private only) | all. private/all need a repo-scope PAT
 private:
-  display: mask              # mask(자물쇠, 이름 제거) | hide | show
+  display: mask              # mask (lock icon, name removed) | hide | show
 
 include:
-  own: false                 # 내 소유 레포의 머지도 포함할지
-  owners: []                 # 비우면 전체
+  own: false                 # also count merges into repos you own
+  owners: []                 # empty = everyone
 exclude:
-  repos: []                  # 예: ["my-company/*"]
-  prs: []                    # 예: ["owner/repo#123"] (현재 이름, 예전 이름, PR id 모두 가능)
+  repos: []                  # e.g. ["my-company/*"]
+  prs: []                    # e.g. ["owner/repo#123"] (current name, old name or PR id)
   titleContains: []
-  before: null               # 예: 2022-01-01
+  before: null               # e.g. 2022-01-01
   minStars: 0
 
 layout:
   columns: 10
-  slots: auto                # auto | 숫자 | none
+  slots: auto                # auto | a number | none
   order: asc                 # asc | desc
-  groupBy: pr                # pr(PR마다 스티커 1장, 레포의 N번째 머지가 단계 결정) | repo(레포당 1장 + xN)
+  groupBy: pr                # pr (one sticker per PR; the Nth merge into a repo sets its tier) | repo (one per repo + xN)
 
 header:
-  stat: stars                # 세 번째 통계: stars(기여한 레포 스타 합) | since | latest | owners
-  colors:                    # 헤더 숫자 색: auto(기본 3색 #72C9F7 #1EE1A0 #EB2D7D) | random(랜덤) | "#RRGGBB"
+  stat: stars                # third stat: stars (total stars of repos you merged into) | since | latest | owners
+  colors:                    # header number colors: auto (default trio #72C9F7 #1EE1A0 #EB2D7D) | random | "#RRGGBB"
     merged: auto
     repos: auto
     third: auto
-  buttons: true              # 헤더 왼쪽 설정, 오른쪽 fetch 버튼 (README는 보는 사람을 못 가려서 모두에게 보이지만 주인만 동작)
-  # settingsUrl: https://...   # 버튼 링크를 직접 지정 (기본: config.yml 편집 페이지, 워크플로우 실행 페이지)
+  buttons: true              # settings (left) and fetch (right) buttons. Everyone sees them, only you can use them
+  # settingsUrl: https://...   # override button links (default: config.yml edit page, workflow run page)
   # fetchUrl: https://...
 
 theme: paper                 # paper | holo | midnight | minimal
 sticker:
   size: 72
-  variation: 0.6             # 0(정렬) ~ 1(자유분방)
-  image: auto                # auto(README 첫 이미지 > 소셜 프리뷰 > 아바타) | readme | social | avatar | language
-  animate: true              # 동 이상 단계의 반짝임 (끄면 정지 이미지)
-  color: unique              # 컬러 단계 테두리색: unique(스티커마다 다른 색) | "#RRGGBB" 하나로 통일
-  tier: auto                 # auto | white color bronze silver gold platinum diamond (전부 한 단계로 고정)
-  thresholds:                # 레포의 PR이 몇 개일 때 해당 단계가 되는지
+  variation: 0.6             # 0 (neat rows) ~ 1 (free-spirited)
+  image: auto                # auto (README first image > social preview > avatar) | readme | social | avatar | language
+  animate: true              # shine on bronze and above (off = still image)
+  color: unique              # color-tier border: unique (each sticker its own color) | one "#RRGGBB" for all
+  tier: auto                 # auto | white color bronze silver gold platinum diamond (pin every sticker to one tier)
+  thresholds:                # how many PRs into a repo unlock each tier
     bronze: 10
     silver: 20
     gold: 30
@@ -53,15 +53,15 @@ sticker:
     diamond: 50
 
 output:
-  mode: html                 # html(클릭 가능) | table | sheet
+  mode: html                 # html (clickable) | table | sheet
   dir: assets/merge-stickers
   readme: README.md
 
-# 개별 스티커 수정 예시
+# Per-sticker overrides
 # stickers:
-#   "owner/repo":              # 레포 이름으로 쓰면 그 레포 스티커 전체, "owner/repo#123"이면 PR 하나
-#     color: "#FF6B6B"       # 컬러 단계 테두리색 (기본은 스티커마다 고유색)
-#     tier: diamond          # 단계 강제 (white color bronze silver gold platinum diamond)
+#   "owner/repo":              # a repo name styles all its stickers, "owner/repo#123" styles one PR
+#     color: "#FF6B6B"       # color-tier border (default: a unique color per sticker)
+#     tier: diamond          # force a tier (white color bronze silver gold platinum diamond)
 #     shape: star-badge      # circle squircle rounded-square hexagon star-badge shield cloud scallop
 #     finish: holo           # glossy matte holo foil
 #     rotate: 8

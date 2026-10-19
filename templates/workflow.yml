@@ -1,40 +1,40 @@
 name: merge-stickers
 on:
   schedule:
-    - cron: "0 18 * * 0" # 매주 일요일 UTC 18시 = 월요일 KST 새벽 3시
+    - cron: "0 18 * * 0" # weekly, Sunday 18:00 UTC
   workflow_dispatch:
-    # README의 fetch 버튼 > Run workflow 를 누르면 뜨는 이 폼이 설정창입니다.
-    # 값을 고르면 config.yml에 저장되어 이후 매주 자동 실행에도 유지됩니다. keep은 "바꾸지 않음".
+    # This form is the settings panel: README fetch button > Run workflow.
+    # Picked values are saved to config.yml and kept for later scheduled runs. "keep" means "don't change".
     inputs:
       visibility:
-        description: "보기: public(공개만) / private(비공개만, repo 스코프 PAT 필요) / all(전부)"
+        description: "Show: public (public only) / private (private only, needs a repo-scope PAT) / all"
         type: choice
         options: [keep, public, private, all]
         default: keep
       private_display:
-        description: "비공개 PR 표시: mask(자물쇠, 이름 숨김) / hide(숨김) / show(그대로)"
+        description: "Private PRs: mask (lock icon, name hidden) / hide / show (as is)"
         type: choice
         options: [keep, mask, hide, show]
         default: keep
       theme:
-        description: "테마"
+        description: "Theme"
         type: choice
         options: [keep, paper, holo, midnight, minimal]
         default: keep
       sticker_color:
-        description: "스티커 테두리색: unique(모든 스티커 다른 색) 또는 #RRGGBB 하나로 통일 (keep=유지)"
+        description: "Sticker border: unique (every sticker its own color) or one #RRGGBB for all (keep = no change)"
         type: string
         default: keep
       merged_color:
-        description: "MERGED PRs 숫자 색: auto(기본색) / random(랜덤) / #RRGGBB (keep=유지)"
+        description: "MERGED PRs number color: auto (default) / random / #RRGGBB (keep = no change)"
         type: string
         default: keep
       repos_color:
-        description: "REPOS 숫자 색: auto(기본색) / random(랜덤) / #RRGGBB (keep=유지)"
+        description: "REPOS number color: auto (default) / random / #RRGGBB (keep = no change)"
         type: string
         default: keep
       third_color:
-        description: "STARS 숫자 색: auto(기본색) / random(랜덤) / #RRGGBB (keep=유지)  |  ⚠ 설정을 고른 뒤 아래 Run workflow 버튼을 눌러야 적용됩니다!"
+        description: "STARS number color: auto (default) / random / #RRGGBB (keep = no change)  |  ⚠ Press the Run workflow button below to apply!"
         type: string
         default: keep
 permissions:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: htjworld/merge-stickers@main
+      - uses: htjworld/merge-stickers@v1
         with:
           token: ${{ secrets.GH_PAT || github.token }}
           visibility: ${{ inputs.visibility }}

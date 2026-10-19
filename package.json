@@ -1,7 +1,7 @@
 {
   "name": "merge-stickers",
-  "version": "0.1.0",
-  "description": "내가 머지시킨 오픈소스 PR을 칭찬스티커판처럼 README에 붙여주는 도구",
+  "version": "1.0.0",
+  "description": "Turn every open-source PR you got merged into a collectible sticker on your GitHub profile README.",
   "type": "module",
   "bin": {
     "merge-stickers": "dist/cli.js"
@@ -15,6 +15,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsup src/cli.ts --format esm --clean",
     "dev": "tsx src/cli.ts",
     "test": "vitest run",
@@ -34,5 +35,20 @@
     "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.0.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/htjworld/merge-stickers.git"
+  },
+  "homepage": "https://github.com/htjworld/merge-stickers#readme",
+  "keywords": [
+    "github-profile",
+    "readme",
+    "profile-readme",
+    "github-actions",
+    "stickers",
+    "open-source",
+    "svg",
+    "pull-requests"
+  ]
 }

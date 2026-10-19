@@ -1,14 +1,14 @@
-name: merge-stickers
-description: 내가 머지시킨 오픈소스 PR을 칭찬스티커판처럼 README에 붙여줍니다
+name: Merge Stickers
+description: Turn every open-source PR you got merged into a collectible sticker on your GitHub profile README.
 author: htjworld
 branding:
   icon: award
-  color: orange
+  color: purple
 inputs:
   token:
-    description: GitHub 토큰. private PR을 보려면 repo 스코프 PAT가 필요합니다.
+    description: GitHub token. Use a PAT with the repo scope to include private PRs.
     default: ${{ github.token }}
-  # 아래는 Run workflow 설정창에서 넘어오는 값. 비었거나 keep이면 config.yml을 그대로 둔다.
+  # Values below come from the Run workflow form. Empty or "keep" leaves config.yml unchanged.
   visibility:
     description: public | private | all
     default: ""
@@ -19,16 +19,16 @@ inputs:
     description: paper | holo | midnight | minimal
     default: ""
   sticker_color:
-    description: unique(스티커마다 다른 색) 또는 #RRGGBB
+    description: unique (a different color per sticker) or #RRGGBB
     default: ""
   merged_color:
-    description: auto(기본색) | random | #RRGGBB (헤더 MERGED PRs 숫자 색)
+    description: auto (default color) | random | #RRGGBB (header MERGED PRs number)
     default: ""
   repos_color:
-    description: auto(기본색) | random | #RRGGBB (헤더 REPOS 숫자 색)
+    description: auto (default color) | random | #RRGGBB (header REPOS number)
     default: ""
   third_color:
-    description: auto(기본색) | random | #RRGGBB (헤더 세 번째 숫자 색)
+    description: auto (default color) | random | #RRGGBB (header third number)
     default: ""
 runs:
   using: composite
@@ -41,7 +41,7 @@ runs:
         path: .merge-stickers/cache
         key: merge-stickers-cache-${{ github.run_id }}
         restore-keys: merge-stickers-cache-
-    # npm 배포 없이 액션 저장소 코드를 그대로 빌드해서 쓴다
+    # Builds the action's own source; no npm publish needed
     - name: build merge-stickers
       shell: bash
       working-directory: ${{ github.action_path }}
