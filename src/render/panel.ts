@@ -1,5 +1,5 @@
-// 스티커판: 애플 타일처럼 연속 곡률 모서리에 단색을 채운 판. 다크 모드는 짙은 회색 (올블랙 아님).
-export const PANEL: [light: string, dark: string] = ["#FBFBF8", "#1C1C1E"];
+// 스티커판: 애플 타일처럼 연속 곡률 모서리에 단색을 채운 판. 라이트는 노랗지도 회색도 아닌 차가운 흰색(본문 흰색과 미세하게만 다름), 다크는 짙은 회색 (올블랙 아님).
+export const PANEL: [light: string, dark: string] = ["#FAFBFC", "#1C1C1E"];
 // 줄 사이와 위아래 조각은 GitHub 본문 줄높이(16px x 1.5 = 24)보다 낮으면 줄 사이에 틈이 생겨 판이 끊긴다
 export const SIDE = 32, CAP = 32, RAIL = 24; // 옆 여백, 위아래 여백, 줄 사이 간격
 const R = 30; // apple.com 타일 반지름 (--tile-border-radius)
